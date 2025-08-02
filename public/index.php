@@ -258,6 +258,12 @@ switch ($action) {
         break;
     
     case 'profile':
+        // Get complete user data for profile display
+        $user = $userModel->findById($currentUser['id']);
+        if (!$user) {
+            $error = 'User not found.';
+        }
+        
         if ($_POST) {
             $updateData = [];
             if (!empty($_POST['email'])) {
