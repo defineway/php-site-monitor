@@ -5,6 +5,13 @@ use App\Models\User;
 use App\Models\Session;
 
 class AuthService {
+    private $userModel;
+    private $sessionModel;
+    
+    public function __construct() {
+        $this->userModel = new User();
+        $this->sessionModel = new Session();
+    }
 
     /**
      * Change password for a user (self-service)
@@ -17,8 +24,8 @@ class AuthService {
         if (!$this->userModel->verifyPassword($currentPassword, $user['password_hash'])) {
             return ['success' => false, 'message' => 'Current password is incorrect'];
         }
-        if (strlen($newPassword) < 6) {
-            return ['success' => false, 'message' => 'New password must be at least 6 characters'];
+        if (strlen($newPassword) < 8) {
+            return ['success' => false, 'message' => 'New password must be at least 8 characters'];
         }
         try {
             $this->userModel->update($userId, ['password' => $newPassword]);
@@ -26,13 +33,6 @@ class AuthService {
         } catch (\Exception $e) {
             return ['success' => false, 'message' => 'Failed to change password: ' . $e->getMessage()];
         }
-    }
-    private $userModel;
-    private $sessionModel;
-    
-    public function __construct() {
-        $this->userModel = new User();
-        $this->sessionModel = new Session();
     }
     
     public function login(string $username, string $password): array {

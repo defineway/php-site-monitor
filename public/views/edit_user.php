@@ -212,11 +212,20 @@
                                         </a>
                                     <?php endif; ?>
                                     
-                                    <a href="?action=delete_user&id=<?= $user['id'] ?>" 
-                                       class="btn btn-danger btn-sm ms-1"
-                                       onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </a>
+                                    <div class="btn-group ms-1" role="group">
+                                        <a href="?action=delete_user&id=<?= $user['id'] ?>" 
+                                           class="btn btn-warning btn-sm"
+                                           title="Deactivate User (Soft Delete)"
+                                           onclick="return confirm('Are you sure you want to deactivate this user? They will be hidden but can be reactivated later.')">
+                                            <i class="fas fa-user-slash"></i> Deactivate
+                                        </a>
+                                        <a href="?action=delete_user&id=<?= $user['id'] ?>&hard=true" 
+                                           class="btn btn-danger btn-sm"
+                                           title="Permanently Delete User"
+                                           onclick="return confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone and will remove all their data!')">
+                                            <i class="fas fa-trash"></i> Delete Forever
+                                        </a>
+                                    </div>
                                 </div>
                                 <?php endif; ?>
                             </div>
