@@ -11,7 +11,7 @@ class AuthController extends BaseController {
      */
     public function login(): void {
         if ($this->isLoggedIn()) {
-            $this->redirect('index.php');
+            $this->redirect('?action=dashboard');
         }
         
         $error = null;
@@ -23,7 +23,7 @@ class AuthController extends BaseController {
             
             $result = $this->authService->login($username, $password);
             if ($result['success']) {
-                $this->redirectWithSuccess('index.php', 'login');
+                $this->redirect('?action=dashboard');
             } else {
                 $error = $result['message'];
             }
@@ -40,7 +40,7 @@ class AuthController extends BaseController {
      */
     public function register(): void {
         if ($this->isLoggedIn()) {
-            $this->redirect('index.php');
+            $this->redirect('?action=dashboard');
         }
         
         $error = null;

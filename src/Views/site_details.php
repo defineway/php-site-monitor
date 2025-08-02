@@ -1,13 +1,22 @@
-<?php require_once __DIR__ . '/security.php'; ?>
+<?php 
+require_once __DIR__ . '/security.php'; 
+
+// Set current page for navigation highlighting
+$currentPage = 'site_details';
+// $currentUser is provided by the controller
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Site Details - PHP Site Monitor</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <?php include __DIR__ . '/partials/header.php'; ?>
+    
     <div class="container mt-4">
         <h1>Site Details</h1>
         
@@ -67,5 +76,7 @@
             <?php endif; ?>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,13 +1,22 @@
-<?php require_once __DIR__ . '/security.php'; ?>
+<?php 
+require_once __DIR__ . '/security.php'; 
+
+// Set current page for navigation highlighting
+$currentPage = 'users';
+// $currentUser is provided by the controller
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users - PHP Site Monitor</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <?php include __DIR__ . '/partials/header.php'; ?>
+    
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>User Management</h1>
@@ -60,28 +69,30 @@
                     <?php if (!empty($users)): ?>
                         <?php foreach ($users as $user): ?>
                             <tr>
-                                <td><?= htmlspecialchars($user['id']) ?></td>
-                                <td><?= htmlspecialchars($user['username']) ?></td>
-                                <td><?= htmlspecialchars($user['email']) ?></td>
-                                <td><?= htmlspecialchars($user['role']) ?></td>
+                                <td><?= htmlspecialchars($user['id'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user['username'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user['role'] ?? 'user') ?></td>
                                 <td>
-                                    <span class="badge bg-<?= $user['status'] === 'active' ? 'success' : 'secondary' ?>">
-                                        <?= htmlspecialchars($user['status']) ?>
+                                    <?php $userStatus = $user['status'] ?? 'inactive'; ?>
+                                    <span class="badge bg-<?= $userStatus === 'active' ? 'success' : 'secondary' ?>">
+                                        <?= htmlspecialchars($userStatus) ?>
                                     </span>
                                 </td>
-                                <td><?= htmlspecialchars($user['created_at']) ?></td>
+                                <td><?= htmlspecialchars($user['created_at'] ?? '') ?></td>
                                 <td>
                                     <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
                                         <div class="btn-group" role="group">
                                             <a href="?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-                                            <?php if ($user['status'] === 'active'): ?>
+                                            <?php $userStatus = $user['status'] ?? 'inactive'; ?>
+                                            <?php if ($userStatus === 'active'): ?>
                                                 <a href="?action=deactivate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-warning"
                                                    onclick="return confirm('Deactivate this user?')">Deactivate</a>
                                             <?php else: ?>
                                                 <a href="?action=activate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-success">Activate</a>
                                             <?php endif; ?>
-                                            <a href="?action=delete_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-danger"
-                                               onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                            <a href="?action=delete_user&id=<?= $user['id'] ?>&hard=true" class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Are you sure you want to PERMANENTLY DELETE this user? This action cannot be undone.')">Delete</a>
                                         </div>
                                     <?php else: ?>
                                         <span class="text-muted">Admin access required</span>
@@ -102,5 +113,7 @@
             <a href="index.php" class="btn btn-secondary">Back to Dashboard</a>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
