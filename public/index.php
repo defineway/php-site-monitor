@@ -74,13 +74,23 @@ switch ($action) {
         // Admin only
         $authService->requireAdmin();
         $userId = (int)($_GET['id'] ?? 0);
+        $hardDelete = isset($_GET['hard']) && $_GET['hard'] === 'true';
+        
         if ($userId === $currentUser['id']) {
             header('Location: index.php?action=users&error=cannot_delete_self');
             exit;
         }
+        
         try {
-            $userModel->hardDelete($userId);
-            header('Location: index.php?action=users&success=user_deleted');
+            if ($hardDelete) {
+                // Hard delete requires explicit confirmation parameter
+                $userModel->hardDelete($userId);
+                header('Location: index.php?action=users&success=user_permanently_deleted');
+            } else {
+                // Default to soft delete (deactivate)
+                $userModel->delete($userId);
+                header('Location: index.php?action=users&success=user_deactivated');
+            }
             exit;
         } catch (Exception $e) {
             header('Location: index.php?action=users&error=delete_failed');

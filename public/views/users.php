@@ -78,6 +78,7 @@
                     case 'user_added': echo 'User has been added successfully.'; break;
                     case 'user_updated': echo 'User has been updated successfully.'; break;
                     case 'user_deleted': echo 'User has been deleted successfully.'; break;
+                    case 'user_permanently_deleted': echo 'User has been permanently deleted from the system.'; break;
                     case 'user_activated': echo 'User has been activated successfully.'; break;
                     case 'user_deactivated': echo 'User has been deactivated successfully.'; break;
                     default: echo 'Operation completed successfully.';
@@ -182,12 +183,20 @@
                                                                 </a>
                                                             <?php endif; ?>
                                                             
-                                                            <a href="?action=delete_user&id=<?= $user['id'] ?>" 
-                                                               class="btn btn-outline-danger" 
-                                                               title="Delete User"
-                                                               onclick="return confirm('Are you sure you want to delete this user? This action cannot be undone.')">
-                                                                <i class="fas fa-trash"></i>
-                                                            </a>
+                                                            <div class="btn-group" role="group">
+                                                                <a href="?action=delete_user&id=<?= $user['id'] ?>" 
+                                                                   class="btn btn-outline-warning btn-sm" 
+                                                                   title="Deactivate User (Soft Delete)"
+                                                                   onclick="return confirm('Are you sure you want to deactivate this user? They will be hidden but can be reactivated later.')">
+                                                                    <i class="fas fa-user-slash"></i>
+                                                                </a>
+                                                                <a href="?action=delete_user&id=<?= $user['id'] ?>&hard=true" 
+                                                                   class="btn btn-outline-danger btn-sm" 
+                                                                   title="Permanently Delete User"
+                                                                   onclick="return confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone and will remove all their data!')">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </a>
+                                                            </div>
                                                         <?php else: ?>
                                                             <span class="btn btn-outline-secondary disabled" title="Cannot modify your own account">
                                                                 <i class="fas fa-lock"></i>
