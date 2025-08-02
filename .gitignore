@@ -1,0 +1,95 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS folder attributes
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# macOS volume info
+.VolumeIcon.icns
+
+# macOS resource fork
+*.AppleDouble
+
+# macOS metadata
+.DS_Store?
+
+# Thumbnails
+._.DS_Store
+
+# macOS Quick Look
+*.qlgenerator
+
+# macOS Finder tags
+*.tag
+
+# macOS temporary files
+.TemporaryItems/
+.com.apple.timemachine.donotpresent
+
+# VS Code settings
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Composer vendor directory
+/vendor/
+
+# PHPUnit cache
+.phpunit.result.cache
+
+# Environment files
+.env
+.env.*
+
+# Node modules (if any in future)
+node_modules/
+
+# Backup files
+*~
+*.bak
+*.swp
+*.swo
+
+# Compressed and archive files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tar.bz2
+*.tbz2
+*.tar.xz
+*.txz
+*.rar
+*.7z
+*.gz
+*.bz2
+*.xz
+*.lz
+*.lzma
+*.Z
+*.cab
+*.iso
+*.img
+*.dmg
+*.bin
+*.msi
+*.apk
+*.jar
+*.war
+*.ear
+*.swm
+*.vhd
+*.vhdx
+*.wim
+*.part
+
+# Other system files
+Thumbs.db
+Desktop.ini

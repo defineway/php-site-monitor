@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: php-site-monitor
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./logs:/var/www/logs
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=site_monitor
+      - DB_USER=monitor_user
+      - DB_PASS=secure_password
+    networks:
+      - monitor-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-site-monitor
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - monitor-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-site-monitor
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: site_monitor
+      MYSQL_USER: monitor_user
+      MYSQL_PASSWORD: secure_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./config/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - monitor-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-site-monitor
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - monitor-network
+
+volumes:
+  mysql_data:
+
+networks:
+  monitor-network:
+    driver: bridge
