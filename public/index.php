@@ -31,6 +31,113 @@ if (!in_array($action, $publicActions)) {
 }
 
 switch ($action) {
+    case 'edit_user':
+        // Admin only
+        $authService->requireAdmin();
+        $userId = (int)($_GET['id'] ?? 0);
+        $user = $userModel->findById($userId);
+        if (!$user) {
+            header('Location: index.php?action=users&error=user_not_found');
+            exit;
+        }
+        if ($_POST) {
+            $updateData = [];
+            if (!empty($_POST['username'])) {
+                $updateData['username'] = $_POST['username'];
+            }
+            if (!empty($_POST['email'])) {
+                $updateData['email'] = $_POST['email'];
+            }
+            if (!empty($_POST['role'])) {
+                $updateData['role'] = $_POST['role'];
+            }
+            if (isset($_POST['status'])) {
+                $updateData['status'] = $_POST['status'];
+            }
+            if (!empty($_POST['password'])) {
+                $updateData['password'] = $_POST['password'];
+            }
+            if (!empty($updateData)) {
+                try {
+                    $userModel->update($userId, $updateData);
+                    header('Location: index.php?action=users&success=user_updated');
+                    exit;
+                } catch (Exception $e) {
+                    $error = 'Failed to update user: ' . $e->getMessage();
+                }
+            }
+        }
+        include 'views/edit_user.php';
+        break;
+
+    case 'delete_user':
+        // Admin only
+        $authService->requireAdmin();
+        $userId = (int)($_GET['id'] ?? 0);
+        if ($userId === $currentUser['id']) {
+            header('Location: index.php?action=users&error=cannot_delete_self');
+            exit;
+        }
+        try {
+            $userModel->hardDelete($userId);
+            header('Location: index.php?action=users&success=user_deleted');
+            exit;
+        } catch (Exception $e) {
+            header('Location: index.php?action=users&error=delete_failed');
+            exit;
+        }
+
+    case 'activate_user':
+        // Admin only
+        $authService->requireAdmin();
+        $userId = (int)($_GET['id'] ?? 0);
+        if ($userId === $currentUser['id']) {
+            header('Location: index.php?action=users&error=cannot_modify_self');
+            exit;
+        }
+        try {
+            $userModel->update($userId, ['status' => 'active']);
+            header('Location: index.php?action=users&success=user_activated');
+            exit;
+        } catch (Exception $e) {
+            header('Location: index.php?action=users&error=activation_failed');
+            exit;
+        }
+
+    case 'deactivate_user':
+        // Admin only
+        $authService->requireAdmin();
+        $userId = (int)($_GET['id'] ?? 0);
+        if ($userId === $currentUser['id']) {
+            header('Location: index.php?action=users&error=cannot_modify_self');
+            exit;
+        }
+        try {
+            $userModel->update($userId, ['status' => 'inactive']);
+            header('Location: index.php?action=users&success=user_deactivated');
+            exit;
+        } catch (Exception $e) {
+            header('Location: index.php?action=users&error=deactivation_failed');
+            exit;
+        }
+
+    case 'change_password':
+        // Self-service password change
+        if ($_POST) {
+            if (empty($_POST['current_password']) || empty($_POST['new_password'])) {
+                $error = 'Current and new password required.';
+            } else {
+                $result = $authService->changePassword($currentUser['id'], $_POST['current_password'], $_POST['new_password']);
+                if ($result['success']) {
+                    header('Location: index.php?action=profile&success=password_changed');
+                    exit;
+                } else {
+                    $error = $result['message'];
+                }
+            }
+        }
+        include 'views/change_password.php';
+        break;
     case 'login':
         if ($_POST) {
             $result = $authService->login($_POST['username'], $_POST['password']);

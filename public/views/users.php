@@ -78,6 +78,8 @@
                     case 'user_added': echo 'User has been added successfully.'; break;
                     case 'user_updated': echo 'User has been updated successfully.'; break;
                     case 'user_deleted': echo 'User has been deleted successfully.'; break;
+                    case 'user_activated': echo 'User has been activated successfully.'; break;
+                    case 'user_deactivated': echo 'User has been deactivated successfully.'; break;
                     default: echo 'Operation completed successfully.';
                 }
                 ?>

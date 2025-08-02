@@ -44,6 +44,15 @@ class User {
     }
     
     public function findById(int $id): ?array {
+        $sql = "SELECT * FROM users WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+    
+    public function findByIdActive(int $id): ?array {
         $sql = "SELECT * FROM users WHERE id = :id AND is_active = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $id]);
@@ -63,7 +72,13 @@ class User {
     }
     
     public function findAll(): array {
-        $sql = "SELECT id, username, email, role, is_active, created_at FROM users ORDER BY username";
+        $sql = "SELECT id, username, email, role, is_active, created_at, updated_at FROM users ORDER BY username";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll();
+    }
+    
+    public function findAllActive(): array {
+        $sql = "SELECT id, username, email, role, is_active, created_at, updated_at FROM users WHERE is_active = 1 ORDER BY username";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
@@ -72,22 +87,45 @@ class User {
         $fields = [];
         $params = ['id' => $id];
         
-        foreach (['username', 'email', 'role', 'is_active'] as $field) {
-            if (isset($data[$field])) {
-                $fields[] = "{$field} = :{$field}";
-                $params[$field] = $data[$field];
-            }
+        // Handle each field properly
+        if (isset($data['username'])) {
+            $fields[] = "username = :username";
+            $params['username'] = $data['username'];
         }
         
+        if (isset($data['email'])) {
+            $fields[] = "email = :email";
+            $params['email'] = $data['email'];
+        }
+        
+        if (isset($data['role'])) {
+            $fields[] = "role = :role";
+            $params['role'] = $data['role'];
+        }
+        
+        if (isset($data['is_active'])) {
+            $fields[] = "is_active = :is_active";
+            $params['is_active'] = (bool)$data['is_active'];
+        }
+        
+        // Handle status as is_active (backwards compatibility)
+        if (isset($data['status'])) {
+            $fields[] = "is_active = :is_active";
+            $params['is_active'] = $data['status'] === 'active' ? 1 : 0;
+        }
+
         if (isset($data['password'])) {
             $fields[] = "password_hash = :password_hash";
             $params['password_hash'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
-        
+
         if (empty($fields)) {
             return false;
         }
-        
+
+        // Add updated_at timestamp
+        $fields[] = "updated_at = CURRENT_TIMESTAMP";
+
         $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($params);
@@ -95,8 +133,41 @@ class User {
     
     public function delete(int $id): bool {
         // Soft delete by setting is_active to false
-        $sql = "UPDATE users SET is_active = 0 WHERE id = :id";
+        $sql = "UPDATE users SET is_active = 0, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute(['id' => $id]);
+    }
+    
+    public function activate(int $id): bool {
+        // Reactivate user by setting is_active to true
+        $sql = "UPDATE users SET is_active = 1, updated_at = CURRENT_TIMESTAMP WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
+    
+    public function hardDelete(int $id): bool {
+        // Permanent delete - use with caution
+        $sql = "DELETE FROM users WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
+    
+    public function getUserStats(): array {
+        $sql = "SELECT 
+                    COUNT(*) as total_users,
+                    COUNT(CASE WHEN is_active = 1 THEN 1 END) as active_users,
+                    COUNT(CASE WHEN is_active = 0 THEN 1 END) as inactive_users,
+                    COUNT(CASE WHEN role = 'admin' THEN 1 END) as admin_users
+                FROM users";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetch();
+    }
+    
+    public function findByRole(string $role): array {
+        $sql = "SELECT id, username, email, role, is_active, created_at, updated_at 
+                FROM users WHERE role = :role ORDER BY username";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['role' => $role]);
+        return $stmt->fetchAll();
     }
 }

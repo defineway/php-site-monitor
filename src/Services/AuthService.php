@@ -5,6 +5,28 @@ use App\Models\User;
 use App\Models\Session;
 
 class AuthService {
+
+    /**
+     * Change password for a user (self-service)
+     */
+    public function changePassword(int $userId, string $currentPassword, string $newPassword): array {
+        $user = $this->userModel->findById($userId);
+        if (!$user) {
+            return ['success' => false, 'message' => 'User not found'];
+        }
+        if (!$this->userModel->verifyPassword($currentPassword, $user['password_hash'])) {
+            return ['success' => false, 'message' => 'Current password is incorrect'];
+        }
+        if (strlen($newPassword) < 6) {
+            return ['success' => false, 'message' => 'New password must be at least 6 characters'];
+        }
+        try {
+            $this->userModel->update($userId, ['password' => $newPassword]);
+            return ['success' => true, 'message' => 'Password changed successfully'];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Failed to change password: ' . $e->getMessage()];
+        }
+    }
     private $userModel;
     private $sessionModel;
     
