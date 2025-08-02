@@ -11,7 +11,9 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>User Management</h1>
-            <a href="?action=add_user" class="btn btn-primary">Add New User</a>
+            <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
+                <a href="?action=add_user" class="btn btn-primary">Add New User</a>
+            <?php endif; ?>
         </div>
         
         <?php if (isset($_GET['success'])): ?>
@@ -69,17 +71,21 @@
                                 </td>
                                 <td><?= htmlspecialchars($user['created_at']) ?></td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-                                        <?php if ($user['status'] === 'active'): ?>
-                                            <a href="?action=deactivate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-warning"
-                                               onclick="return confirm('Deactivate this user?')">Deactivate</a>
-                                        <?php else: ?>
-                                            <a href="?action=activate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-success">Activate</a>
-                                        <?php endif; ?>
-                                        <a href="?action=delete_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-danger"
-                                           onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
-                                    </div>
+                                    <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
+                                        <div class="btn-group" role="group">
+                                            <a href="?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
+                                            <?php if ($user['status'] === 'active'): ?>
+                                                <a href="?action=deactivate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-warning"
+                                                   onclick="return confirm('Deactivate this user?')">Deactivate</a>
+                                            <?php else: ?>
+                                                <a href="?action=activate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-success">Activate</a>
+                                            <?php endif; ?>
+                                            <a href="?action=delete_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-danger"
+                                               onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                        </div>
+                                    <?php else: ?>
+                                        <span class="text-muted">Admin access required</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

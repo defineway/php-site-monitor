@@ -10,9 +10,21 @@ if (!defined('APP_RUNNING')) {
     die('Direct access to this file is not allowed.');
 }
 
-// Additional security: Check if user session is valid for authenticated pages
-if (!isset($_COOKIE['session_id']) && !in_array($action ?? '', ['login', 'register'])) {
-    header('Location: index.php?action=login');
-    exit;
+// Additional security: Validate proper session state for authenticated pages
+// Note: This is a basic check - full authentication is handled in controllers
+$currentScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
+$isPublicPage = in_array($currentScript, ['login.php', 'register.php']);
+
+if (!$isPublicPage && session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Basic session validation for non-public pages
+if (!$isPublicPage && !isset($_SESSION['user_id'])) {
+    // Only redirect if we're not already on a public page
+    if (!in_array($currentScript, ['login.php', 'register.php'])) {
+        header('Location: /index.php?action=login');
+        exit;
+    }
 }
 ?>

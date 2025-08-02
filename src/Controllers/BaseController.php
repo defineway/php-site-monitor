@@ -15,16 +15,26 @@ abstract class BaseController {
      * Render a view with data
      */
     protected function render(string $view, array $data = []): void {
+        // Validate view name to prevent directory traversal
+        if (preg_match('/[^a-zA-Z0-9_\-]/', $view)) {
+            throw new \Exception("Invalid view name: {$view}");
+        }
+        
         // Extract data to variables
         extract($data);
         
-        // Include the view file
+        // Construct and validate the view file path
         $viewPath = __DIR__ . '/../Views/' . $view . '.php';
-        if (!file_exists($viewPath)) {
-            throw new \Exception("View not found: {$view}");
+        $realViewPath = realpath($viewPath);
+        $viewsDirectory = realpath(__DIR__ . '/../Views');
+        
+        // Ensure the view file exists and is within the Views directory
+        if (!$realViewPath || !$viewsDirectory || strpos($realViewPath, $viewsDirectory) !== 0) {
+            throw new \Exception("View not found or path traversal detected: {$view}");
         }
         
-        include $viewPath;
+        // Use require instead of include to ensure critical views are loaded
+        require $realViewPath;
     }
     
     /**

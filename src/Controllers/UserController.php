@@ -15,13 +15,12 @@ class UserController extends BaseController {
         $userModel = new User();
         $user = $userModel->findById($this->currentUser['id']);
         
+        $error = null;
         if (!$user) {
             $error = 'User not found.';
         }
         
-        $error = null;
-        
-        if ($_POST) {
+        if ($_POST && !$error) {
             $updateData = [];
             if (!empty($_POST['email'])) {
                 $updateData['email'] = $_POST['email'];

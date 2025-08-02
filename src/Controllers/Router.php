@@ -77,11 +77,33 @@ class Router {
      * Handle application errors
      */
     private function handleError(\Exception $e): void {
-        // Log the error (you might want to implement proper logging)
-        error_log('Application Error: ' . $e->getMessage());
+        // Log detailed error information for debugging
+        $errorDetails = [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+            'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            'timestamp' => date('Y-m-d H:i:s')
+        ];
         
-        // Show generic error page in production
+        error_log('Application Error: ' . json_encode($errorDetails));
+        
+        // In development, you might want to show the actual error
+        // In production, always show generic error message
+        $isDevelopment = ($_ENV['APP_ENV'] ?? 'production') === 'development';
+        
         http_response_code(500);
-        echo '500 Internal Server Error';
+        
+        if ($isDevelopment) {
+            echo "<h1>500 Internal Server Error</h1>";
+            echo "<p><strong>Error:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<p><strong>File:</strong> " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p>";
+            echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+        } else {
+            echo '500 Internal Server Error';
+        }
     }
 }
