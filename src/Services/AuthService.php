@@ -56,6 +56,14 @@ class AuthService {
         // Set session cookie
         $this->setSessionCookie($sessionId);
         
+        // Also set PHP session for compatibility
+        $_SESSION['user'] = [
+            'id' => $user['id'],
+            'username' => $user['username'],
+            'email' => $user['email'],
+            'role' => $user['role']
+        ];
+        
         // Update last login
         $this->userModel->updateLastLogin($user['id']);
         
@@ -78,8 +86,18 @@ class AuthService {
             $this->sessionModel->delete($sessionId);
         }
         
+        // Clear PHP session
+        $_SESSION = [];
+        
         // Clear session cookie
-        setcookie('session_id', '', time() - 3600, '/', '', false, true);
+        setcookie('session_id', '', [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'domain' => '',
+            'secure' => false,
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
         
         return true;
     }
@@ -118,7 +136,7 @@ class AuthService {
         $user = $this->getCurrentUser();
         
         if (!$user) {
-            header('Location: /index.php?action=login');
+            header('Location: ?action=login');
             exit;
         }
         
@@ -129,7 +147,7 @@ class AuthService {
         $user = $this->requireAuth();
         
         if ($user['role'] !== 'admin') {
-            header('Location: /index.php?action=dashboard&error=access_denied');
+            header('Location: ?action=dashboard&error=access_denied');
             exit;
         }
         
@@ -165,7 +183,14 @@ class AuthService {
     }
     
     private function setSessionCookie(string $sessionId): void {
-        setcookie('session_id', $sessionId, time() + (30 * 24 * 60 * 60), '/', '', false, true);
+        setcookie('session_id', $sessionId, [
+            'expires' => time() + (30 * 24 * 60 * 60), // 30 days
+            'path' => '/',
+            'domain' => '',
+            'secure' => false, // Set to true in production with HTTPS
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
     }
     
     public function cleanupSessions(): int {

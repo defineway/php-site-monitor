@@ -94,3 +94,8 @@ node_modules/
 # Other system files
 Thumbs.db
 Desktop.ini
+
+#Project Test files
+/public/test_login.php
+/public/debug_auth.php
+/public/debug_user.php

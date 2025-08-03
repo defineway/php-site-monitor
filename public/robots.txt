@@ -1,0 +1,13 @@
+User-agent: *
+Disallow: /views/
+Disallow: /src/
+Disallow: /vendor/
+Disallow: /config/
+Disallow: /.env
+Disallow: /composer.json
+Disallow: /composer.lock
+Disallow: /*.log
+Disallow: /*.sql
+
+# Allow public assets
+Allow: /assets/

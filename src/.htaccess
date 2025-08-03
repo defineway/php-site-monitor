@@ -1,0 +1,3 @@
+# Security: Deny access to source code
+Order deny,allow
+Deny from all

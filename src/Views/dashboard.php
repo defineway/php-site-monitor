@@ -1,78 +1,23 @@
+<?php
+// At the top of dashboard.php - security check
+require_once __DIR__ . '/security.php';
+
+// Set current page for navigation highlighting
+$currentPage = 'dashboard';
+// $currentUser is provided by the controller
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP Site Monitor - Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .status-up { color: #28a745; }
-        .status-down { color: #dc3545; }
-        .status-warning { color: #ffc107; }
-        .navbar-brand {
-            font-weight: bold;
-        }
-        .site-card {
-            transition: transform 0.2s;
-        }
-        .site-card:hover {
-            transform: translateY(-2px);
-        }
-    </style>
+    <title>Dashboard - Site Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">
-                <i class="fas fa-monitor"></i> PHP Site Monitor
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.php">
-                            <i class="fas fa-dashboard"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=add_site">
-                            <i class="fas fa-plus"></i> Add Site
-                        </a>
-                    </li>
-                    <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="?action=users">
-                            <i class="fas fa-users"></i> Users
-                        </a>
-                    </li>
-                    <?php endif; ?>
-                </ul>
-                
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i> <?= htmlspecialchars($currentUser['username'] ?? 'User') ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="?action=profile">
-                                <i class="fas fa-user-edit"></i> Profile
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="?action=logout">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php include __DIR__ . '/partials/header.php'; ?>
 
     <div class="container mt-4">
         <!-- Alerts -->
@@ -175,6 +120,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

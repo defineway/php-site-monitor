@@ -31,6 +31,10 @@ class User {
         $stmt->execute(['username' => $username]);
         
         $result = $stmt->fetch();
+        if ($result) {
+            // Convert is_active to status for backwards compatibility
+            $result['status'] = $result['is_active'] ? 'active' : 'inactive';
+        }
         return $result ?: null;
     }
     
@@ -49,6 +53,10 @@ class User {
         $stmt->execute(['id' => $id]);
         
         $result = $stmt->fetch();
+        if ($result) {
+            // Convert is_active to status for backwards compatibility
+            $result['status'] = $result['is_active'] ? 'active' : 'inactive';
+        }
         return $result ?: null;
     }
     
@@ -74,7 +82,14 @@ class User {
     public function findAll(): array {
         $sql = "SELECT id, username, email, role, is_active, created_at, updated_at FROM users ORDER BY username";
         $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
+        $users = $stmt->fetchAll();
+        
+        // Convert is_active to status for backwards compatibility
+        foreach ($users as &$user) {
+            $user['status'] = $user['is_active'] ? 'active' : 'inactive';
+        }
+        
+        return $users;
     }
     
     public function findAllActive(): array {
