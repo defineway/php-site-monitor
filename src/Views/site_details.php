@@ -23,12 +23,12 @@ $currentPage = 'site_details';
         <?php if (isset($site)): ?>
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><?= htmlspecialchars($site['name']) ?></h5>
+                    <h5><?= htmlspecialchars($site['name'] ?? 'N/A') ?></h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site['url']) ?>" target="_blank"><?= htmlspecialchars($site['url']) ?></a></p>
-                    <p><strong>Check Interval:</strong> <?= htmlspecialchars($site['check_interval']) ?> minutes</p>
-                    <p><strong>Created:</strong> <?= htmlspecialchars($site['created_at']) ?></p>
+                    <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site['url'] ?? '#') ?>" target="_blank"><?= htmlspecialchars($site['url'] ?? 'N/A') ?></a></p>
+                    <p><strong>Check Interval:</strong> <?= htmlspecialchars($site['check_interval'] ?? 'N/A') ?> minutes</p>
+                    <p><strong>Created:</strong> <?= htmlspecialchars($site['created_at'] ?? 'N/A') ?></p>
                 </div>
             </div>
             
@@ -49,14 +49,23 @@ $currentPage = 'site_details';
                             <?php foreach ($results as $result): ?>
                                 <tr>
                                     <td>
-                                        <span class="badge bg-<?= $result['status'] === 'up' ? 'success' : ($result['status'] === 'down' ? 'danger' : 'warning') ?>">
-                                            <?= htmlspecialchars($result['status']) ?>
+                                        <?php
+                                            $status = $result['status'] ?? 'unknown';
+                                            $badgeClass = 'warning'; // Default
+                                            if ($status === 'up') {
+                                                $badgeClass = 'success';
+                                            } elseif ($status === 'down') {
+                                                $badgeClass = 'danger';
+                                            }
+                                        ?>
+                                        <span class="badge bg-<?= $badgeClass ?>">
+                                            <?= htmlspecialchars($status) ?>
                                         </span>
                                     </td>
-                                    <td><?= htmlspecialchars($result['response_time']) ?>ms</td>
-                                    <td><?= htmlspecialchars($result['http_status_code']) ?></td>
-                                    <td><?= htmlspecialchars($result['checked_at']) ?></td>
-                                    <td><?= htmlspecialchars($result['message']) ?></td>
+                                    <td><?= htmlspecialchars($result['response_time'] ?? 'N/A') ?>ms</td>
+                                    <td><?= htmlspecialchars($result['http_status_code'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($result['checked_at'] ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($result['message'] ?? '') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -72,7 +81,7 @@ $currentPage = 'site_details';
         <div class="mt-3">
             <a href="index.php" class="btn btn-secondary">Back to Dashboard</a>
             <?php if (isset($site)): ?>
-                <a href="?action=edit_site&id=<?= $site['id'] ?>" class="btn btn-primary">Edit Site</a>
+                <a href="?action=edit_site&id=<?= $site['id'] ?? '' ?>" class="btn btn-primary">Edit Site</a>
             <?php endif; ?>
         </div>
     </div>
