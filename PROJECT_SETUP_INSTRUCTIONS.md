@@ -385,6 +385,13 @@ docker-compose exec mysql mysql -u monitor_user -p -e "TRUNCATE site_monitor.use
 
 # Reset user password (replace with actual user ID)
 docker-compose exec app php -r "echo password_hash('newpassword', PASSWORD_DEFAULT);"
+
+# Copy the generated hash above, then update the user's password in the database.
+# Example (replace <USER_ID> and <HASH> with actual values):
+docker-compose exec mysql mysql -u monitor_user -p -e "UPDATE site_monitor.users SET password='<HASH>' WHERE id=<USER_ID>;"
+
+# Or, if you use username instead of user ID:
+# docker-compose exec mysql mysql -u monitor_user -p -e \"UPDATE site_monitor.users SET password='<HASH>' WHERE username='actual_username';\"
 ```
 
 ### Monitoring and Logging
