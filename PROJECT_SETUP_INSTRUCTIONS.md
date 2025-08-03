@@ -63,7 +63,7 @@ docker-compose logs -f app
 ### 4. Access the Application
 - **Main Application**: http://localhost
 - **phpMyAdmin**: http://localhost:8080
-- **Default Admin**: Create through the registration form
+- **Default Admin**: Credentials are generated on first run—check the container logs (`docker-compose logs -f app`) for the initial admin username and password.
 
 ### 5. Initial Setup
 1. Navigate to http://localhost
