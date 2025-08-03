@@ -1,14 +1,16 @@
 -- Sites table for storing monitored websites
-CREATE TABLE sites (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    url VARCHAR(500) NOT NULL,
-    check_interval INT DEFAULT 300, -- seconds
-    ssl_check_enabled BOOLEAN DEFAULT TRUE,
-    ssl_check_interval INT DEFAULT 86400, -- daily
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+CREATE TABLE IF NOT EXISTS `sites` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `check_interval` int NOT NULL DEFAULT '5',
+  `ssl_check_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `ssl_check_interval` int NOT NULL DEFAULT '86400',
+  `last_checked_at` timestamp NULL DEFAULT NULL,
+  `status` varchar(50) DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Monitoring results table
 CREATE TABLE monitoring_results (

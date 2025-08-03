@@ -1,9 +1,17 @@
 <?php 
 require_once __DIR__ . '/security.php'; 
 
+// Helper function to format seconds into a human-readable string
+function format_interval($seconds) {
+    if ($seconds < 3600) return ($seconds / 60) . " Minutes";
+    if ($seconds < 86400) return ($seconds / 3600) . " Hours";
+    if ($seconds < 604800) return ($seconds / 86400) . " Days";
+    if ($seconds < 2592000) return ($seconds / 604800) . " Weeks";
+    return ($seconds / 2592000) . " Months";
+}
+
 // Set current page for navigation highlighting
 $currentPage = 'site_details';
-// $currentUser is provided by the controller
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +35,11 @@ $currentPage = 'site_details';
                 </div>
                 <div class="card-body">
                     <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site['url'] ?? '#') ?>" target="_blank"><?= htmlspecialchars($site['url'] ?? 'N/A') ?></a></p>
-                    <p><strong>Check Interval:</strong> <?= htmlspecialchars($site['check_interval'] ?? 'N/A') ?> minutes</p>
+                    <p><strong>Check Interval:</strong> Every <?= htmlspecialchars($site['check_interval'] ?? 'N/A') ?> minutes</p>
+                    <p><strong>SSL Check Enabled:</strong> <?= ($site['ssl_check_enabled'] ?? 0) ? 'Yes' : 'No' ?></p>
+                    <?php if ($site['ssl_check_enabled']): ?>
+                        <p><strong>SSL Check Frequency:</strong> Every <?= format_interval($site['ssl_check_interval'] ?? 86400) ?></p>
+                    <?php endif; ?>
                     <p><strong>Created:</strong> <?= htmlspecialchars($site['created_at'] ?? 'N/A') ?></p>
                 </div>
             </div>

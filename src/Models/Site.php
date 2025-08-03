@@ -18,8 +18,8 @@ class Site {
         $stmt->execute([
             'name' => $data['name'],
             'url' => $data['url'],
-            'check_interval' => $data['check_interval'] ?? 300,
-            'ssl_check_enabled' => $data['ssl_check_enabled'] ?? true,
+            'check_interval' => $data['check_interval'] ?? 5,
+            'ssl_check_enabled' => isset($data['ssl_check_enabled']) ? 1 : 0,
             'ssl_check_interval' => $data['ssl_check_interval'] ?? 86400
         ]);
         
@@ -46,9 +46,15 @@ class Site {
                 ssl_check_enabled = :ssl_check_enabled, ssl_check_interval = :ssl_check_interval 
                 WHERE id = :id";
         
-        $data['id'] = $id;
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute($data);
+        return $stmt->execute([
+            'id' => $id,
+            'name' => $data['name'],
+            'url' => $data['url'],
+            'check_interval' => $data['check_interval'] ?? 5,
+            'ssl_check_enabled' => isset($data['ssl_check_enabled']) ? 1 : 0,
+            'ssl_check_interval' => $data['ssl_check_interval'] ?? 86400
+        ]);
     }
     
     public function delete(int $id): bool {
