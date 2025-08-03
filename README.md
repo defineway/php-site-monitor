@@ -212,7 +212,7 @@ This helps keep your repository clean and focused on source code and documentati
 The monitoring script runs every 5 minutes by default. To change this, modify the cron job in the Dockerfile:
 
 ```dockerfile
-RUN echo "*/5 * * * * cd /var/www && php monitor.php >> /var/www/logs/monitor.log 2>&1" | crontab -
+RUN echo "* * * * * cd /var/www && /usr/local/bin/php monitor.php >> /var/www/logs/monitor.log 2>&1" | crontab -
 ```
 
 ## Troubleshooting

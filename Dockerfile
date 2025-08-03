@@ -30,7 +30,7 @@ RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/logs
 
 # Add cron job for monitoring
-RUN echo "*/5 * * * * cd /var/www && php monitor.php >> /var/www/logs/monitor.log 2>&1" | crontab -
+RUN echo "* * * * * cd /var/www && /usr/local/bin/php monitor.php >> /var/www/logs/monitor.log 2>&1" | crontab -
 
 # Start cron and PHP-FPM
 CMD ["sh", "-c", "cron && php-fpm"]
