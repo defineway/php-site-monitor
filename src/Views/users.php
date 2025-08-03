@@ -175,8 +175,8 @@ $currentPage = 'users';
                                     <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
                                         <?php 
                                         // Check if this user is an active admin and would be the last one
-                                        $isCurrentUserActiveAdmin = ($user['role'] ?? 'user') === 'admin' && ($user['status'] ?? 'inactive') === 'active';
-                                        $wouldBeLastActiveAdmin = $isCurrentUserActiveAdmin && $activeAdminUsers <= 1;
+                                        $isThisUserActiveAdmin = ($user['role'] ?? 'user') === 'admin' && ($user['status'] ?? 'inactive') === 'active';
+                                        $wouldBeLastActiveAdmin = $isThisUserActiveAdmin && $activeAdminUsers <= 1;
                                         ?>
                                         <div class="btn-group" role="group">
                                             <a href="?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary" title="Edit User">
