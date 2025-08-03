@@ -58,16 +58,20 @@ $currentPage = 'users';
         
         <!-- User Statistics -->
         <?php 
-        $totalUsers = count($users ?? []);
-        $activeUsers = count(array_filter($users ?? [], function($user) { 
-            return ($user['status'] ?? 'inactive') === 'active'; 
-        }));
-        $adminUsers = count(array_filter($users ?? [], function($user) { 
-            return ($user['role'] ?? 'user') === 'admin'; 
-        }));
-        $activeAdminUsers = count(array_filter($users ?? [], function($user) { 
-            return ($user['role'] ?? 'user') === 'admin' && ($user['status'] ?? 'inactive') === 'active'; 
-        }));
+        $totalUsers = 0;
+        $activeUsers = 0;
+        $adminUsers = 0;
+        $activeAdminUsers = 0;
+        if (!empty($users)) {
+            foreach ($users as $user) {
+                $totalUsers++;
+                $isActive = ($user['status'] ?? 'inactive') === 'active';
+                $isAdmin = ($user['role'] ?? 'user') === 'admin';
+                if ($isActive) $activeUsers++;
+                if ($isAdmin) $adminUsers++;
+                if ($isAdmin && $isActive) $activeAdminUsers++;
+            }
+        }
         ?>
         <div class="row mb-4">
             <div class="col-md-4">
