@@ -3,68 +3,202 @@
 > **Note:** This file is project documentation and should be included in version control (git).
 
 ## Project Overview
-Build a PHP-based application to monitor website uptime and SSL certificate expiration with a web interface for visualization and configuration.
+Build a comprehensive PHP-based application to monitor website uptime and SSL certificate expiration with a modern web interface, complete user authentication system, and advanced management features. The project has evolved into a full-featured web application with MVC architecture, role-based access control, and modern UI components.
+
+## Current Status: ✅ PRODUCTION READY
+The project is fully implemented with all major features completed:
+- ✅ Complete user authentication and authorization system
+- ✅ Modern MVC architecture with custom routing
+- ✅ Advanced user management with safety protections
+- ✅ Responsive UI with Bootstrap 5 and Font Awesome icons
+- ✅ Security hardening and session management
+- ✅ Visual statistics dashboard
+- ✅ Site monitoring functionality (uptime + SSL)
+- ✅ Docker containerization with phpMyAdmin
 
 ## Technology Stack
-- PHP 8.2
-- Composer for dependency management
-- MySQL for database storage
-- Nginx web server
-- Docker for containerization
-- PHPUnit for testing
-- phpMyAdmin for database management (http://localhost:8080)
+- **Backend**: PHP 8.2 with MVC architecture
+- **Database**: MySQL 8.0 with comprehensive schema
+- **Frontend**: Bootstrap 5, Font Awesome 6.4.0
+- **Authentication**: Custom session-based system with role management
+- **Containerization**: Docker & Docker Compose
+- **Web Server**: Nginx (configured in Docker)
+- **Database Management**: phpMyAdmin (http://localhost:8080)
+- **Package Management**: Composer for PHP dependencies
+- **Testing**: PHPUnit for unit and integration tests
 
-## Phase 1: Project Foundation
+## Quick Start Guide
 
-### 1.1 Initialize Composer Project
+### 1. Clone and Setup
 ```bash
-composer init --name="yourname/php-site-monitor" --description="PHP Site Monitor Application" --type="project"
+git clone <repository-url>
+cd php-site-monitor
 ```
 
-### 1.2 Install Required Dependencies
+### 2. Environment Configuration
 ```bash
-# Core dependencies
-composer require php:^8.2
-composer require ext-curl:*
-composer require ext-pdo:*
-composer require ext-pdo_mysql:*
-
-# Development dependencies
-composer require --dev phpunit/phpunit:^10.0
-composer require --dev symfony/var-dumper  # For debugging
+# Create .env file with database credentials
+cat > .env << 'EOF'
+DB_HOST=mysql
+DB_NAME=site_monitor
+DB_USER=monitor_user
+DB_PASS=secure_password
+APP_ENV=development
+APP_DEBUG=true
+EOF
 ```
 
-### 1.3 Create Directory Structure
-```
-├── src/
-│   ├── Models/
-│   ├── Services/
-├── public/
-│   ├── index.php
-│   └── views/
-├── config/
-│   ├── nginx/
-│   │   └── default.conf
-│   └── database/
-│       └── schema.sql
-├── tests/
-├── logs/
-├── storage/
-├── .env
-├── .gitignore
-├── composer.json
-├── composer.lock
-├── Dockerfile
-├── docker-compose.yml
-├── monitor.php
-├── PROJECT_SETUP_INSTRUCTIONS.md
-├── GEMINI.md
+### 3. Build and Deploy
+```bash
+# Build and start all containers
+docker-compose up -d --build
+
+# Check container status
+docker-compose ps
+
+# View application logs
+docker-compose logs -f app
 ```
 
-## Phase 2: Database Layer
+### 4. Access the Application
+- **Main Application**: http://localhost
+- **phpMyAdmin**: http://localhost:8080
+- **Default Admin**: Credentials are generated on first run—check the container logs (`docker-compose logs -f app`) for the initial admin username and password.
 
-### 2.1 Create Database Schema (`config/database/schema.sql`)
+### 5. Initial Setup
+1. Navigate to http://localhost
+2. Register the first admin account
+3. Log in to access the dashboard
+4. Add sites for monitoring
+
+## Enhanced Project Structure
+
+The project now follows a clean MVC architecture:
+```
+├── src/                          # Core PHP classes with MVC architecture
+│   ├── Controllers/             # Request handling and business logic
+│   │   ├── BaseController.php   # Shared controller functionality
+│   │   ├── AuthController.php   # Authentication handling
+│   │   ├── UserController.php   # User management CRUD
+│   │   ├── SiteController.php   # Site monitoring management
+│   │   └── DashboardController.php # Dashboard and statistics
+│   ├── Models/                  # Data layer and database operations
+│   │   ├── User.php            # User data operations
+│   │   ├── Site.php            # Site data operations
+│   │   ├── Session.php         # Session management
+│   │   └── MonitoringResult.php # Monitoring data operations
+│   ├── Services/               # Business logic services
+│   │   ├── UptimeMonitor.php   # Website uptime checking
+│   │   ├── SSLMonitor.php      # SSL certificate monitoring
+│   │   └── AuthService.php     # Authentication business logic
+│   ├── Views/                  # HTML templates with Bootstrap UI
+│   │   ├── partials/           # Reusable components
+│   │   │   └── header.php      # Navigation and common elements
+│   │   ├── auth/               # Authentication views
+│   │   │   ├── login.php       # Login form
+│   │   │   ├── register.php    # Registration form
+│   │   │   └── change-password.php # Password change
+│   │   ├── users/              # User management interface
+│   │   │   ├── users.php       # User list with modern UI
+│   │   │   └── profile.php     # User profile management
+│   │   ├── sites/              # Site management views
+│   │   └── dashboard.php       # Main dashboard with statistics
+│   ├── Config/                 # Configuration classes
+│   │   └── Database.php        # Database connection management
+│   └── Router.php              # Custom routing system
+├── public/                     # Web accessible files
+│   └── index.php              # Application entry point and router
+├── config/                     # External configuration files
+│   ├── nginx/                 # Web server configuration
+│   │   └── default.conf       # Nginx virtual host config
+│   └── database/              # Database setup
+│       └── schema.sql         # Enhanced database schema
+├── tests/                     # Unit and integration tests
+├── logs/                      # Application and monitoring logs
+├── storage/                   # File storage and cache
+├── vendor/                    # Composer dependencies (not in git)
+├── .env                       # Environment variables (not in git)
+├── .gitignore                 # Comprehensive git ignore rules
+├── composer.json              # PHP dependency definitions
+├── composer.lock              # Locked dependency versions
+├── Dockerfile                 # PHP-FPM container configuration
+├── docker-compose.yml         # Multi-container orchestration
+├── monitor.php                # CLI monitoring script
+├── PROJECT_SETUP_INSTRUCTIONS.md # This comprehensive guide
+├── GEMINI.md                  # Project documentation and status
+└── README.md                  # User-facing documentation
+```
+
+## Key Features Implemented
+
+### 🔐 Authentication System
+- Secure login/logout functionality
+- User registration with validation
+- Password hashing with bcrypt
+- Session-based authentication
+- Role-based access control (Admin/User)
+
+### 👥 User Management
+- Complete CRUD operations for users
+- Modern Bootstrap UI with icons
+- Safety protections:
+  - Users cannot delete themselves
+  - Users cannot modify their own status
+  - System prevents deletion of last active admin
+- Statistics dashboard with user counts
+- Responsive design with visual feedback
+
+### 🎨 Modern User Interface
+- Bootstrap 5 with Font Awesome icons
+- Responsive design for all screen sizes
+- Visual statistics cards
+- Dismissible alert notifications
+- Clean navigation with active page highlighting
+- Professional color schemes and typography
+
+### 🛡️ Security Features
+- Input validation and sanitization
+- CSRF protection for forms
+- Secure password storage
+- Session management with database storage
+- Role-based permissions
+- Prevention of privilege escalation
+
+### 📊 Monitoring Capabilities
+- Website uptime monitoring
+- SSL certificate expiration tracking
+- Configurable check intervals
+- Visual status indicators
+- Historical data storage
+
+## Database Schema (Enhanced)
+
+The database schema has been significantly enhanced to support the full application:
+
+### Enhanced Database Schema (`config/database/schema.sql`)
 ```sql
+-- Users table for authentication and authorization
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'user') DEFAULT 'user',
+    is_active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- User sessions for secure authentication
+CREATE TABLE user_sessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    session_id VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 -- Sites table for storing monitored websites
 CREATE TABLE sites (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,7 +211,7 @@ CREATE TABLE sites (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Monitoring results table
+-- Monitoring results table with enhanced tracking
 CREATE TABLE monitoring_results (
     id INT AUTO_INCREMENT PRIMARY KEY,
     site_id INT NOT NULL,
@@ -91,14 +225,11 @@ CREATE TABLE monitoring_results (
     FOREIGN KEY (site_id) REFERENCES sites(id) ON DELETE CASCADE
 );
 
--- Users table for authentication
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Create indexes for better performance
+CREATE INDEX idx_user_sessions_user_id ON user_sessions(user_id);
+CREATE INDEX idx_user_sessions_session_id ON user_sessions(session_id);
+CREATE INDEX idx_monitoring_results_site_id ON monitoring_results(site_id);
+CREATE INDEX idx_monitoring_results_checked_at ON monitoring_results(checked_at);
 ```
 
 ### 2.2 Create Database Configuration (`src/Config/Database.php`)
@@ -142,559 +273,174 @@ class Database {
 }
 ```
 
-## Phase 3: Core Models
+## Development and Maintenance
 
-### 3.1 Create Site Model (`src/Models/Site.php`)
-```php
-<?php
-namespace App\Models;
+### Architecture Overview
+The application follows a clean MVC (Model-View-Controller) pattern:
 
-use App\Config\Database;
+- **Controllers**: Handle HTTP requests and coordinate between models and views
+- **Models**: Manage database operations and business logic
+- **Views**: Render HTML with modern Bootstrap UI components
+- **Services**: Encapsulate complex business logic (monitoring, authentication)
+- **Router**: Custom routing system for clean URLs
 
-class Site {
-    private $db;
-    
-    public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
-    }
-    
-    public function create(array $data): int {
-        $sql = "INSERT INTO sites (name, url, check_interval, ssl_check_enabled, ssl_check_interval) 
-                VALUES (:name, :url, :check_interval, :ssl_check_enabled, :ssl_check_interval)";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($data);
-        
-        return $this->db->lastInsertId();
-    }
-    
-    public function findAll(): array {
-        $sql = "SELECT * FROM sites ORDER BY name";
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
-    }
-    
-    public function findById(int $id): ?array {
-        $sql = "SELECT * FROM sites WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['id' => $id]);
-        
-        $result = $stmt->fetch();
-        return $result ?: null;
-    }
-    
-    public function update(int $id, array $data): bool {
-        $sql = "UPDATE sites SET name = :name, url = :url, check_interval = :check_interval, 
-                ssl_check_enabled = :ssl_check_enabled, ssl_check_interval = :ssl_check_interval 
-                WHERE id = :id";
-        
-        $data['id'] = $id;
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute($data);
-    }
-    
-    public function delete(int $id): bool {
-        $sql = "DELETE FROM sites WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute(['id' => $id]);
-    }
-}
-```
+### Security Implementation
+- **Password Security**: Bcrypt hashing with proper salt
+- **Session Management**: Database-backed session storage
+- **Access Control**: Role-based permissions (Admin/User)
+- **Input Validation**: Comprehensive sanitization and validation
+- **CSRF Protection**: Form tokens to prevent cross-site request forgery
+- **Safe Operations**: Prevention of self-account deletion and last admin removal
 
-### 3.2 Create MonitoringResult Model (`src/Models/MonitoringResult.php`)
-```php
-<?php
-namespace App\Models;
+### Testing and Quality Assurance
 
-use App\Config\Database;
-
-class MonitoringResult {
-    private $db;
-    
-    public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
-    }
-    
-    public function create(array $data): int {
-        $sql = "INSERT INTO monitoring_results (site_id, check_type, status, response_time, status_code, ssl_expiry_date, error_message) 
-                VALUES (:site_id, :check_type, :status, :response_time, :status_code, :ssl_expiry_date, :error_message)";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($data);
-        
-        return $this->db->lastInsertId();
-    }
-    
-    public function findBySiteId(int $siteId, int $limit = 50): array {
-        $sql = "SELECT * FROM monitoring_results WHERE site_id = :site_id 
-                ORDER BY checked_at DESC LIMIT :limit";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':site_id', $siteId, \PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll();
-    }
-    
-    public function getLatestStatus(int $siteId): ?array {
-        $sql = "SELECT * FROM monitoring_results WHERE site_id = :site_id 
-                ORDER BY checked_at DESC LIMIT 1";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['site_id' => $siteId]);
-        
-        $result = $stmt->fetch();
-        return $result ?: null;
-    }
-}
-```
-
-## Phase 4: Monitoring Services
-
-### 4.1 Create UptimeMonitor Service (`src/Services/UptimeMonitor.php`)
-```php
-<?php
-namespace App\Services;
-
-class UptimeMonitor {
-    public function checkSite(string $url): array {
-        $startTime = microtime(true);
-        
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_USERAGENT => 'PHP Site Monitor/1.0',
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-        ]);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-        
-        $responseTime = round((microtime(true) - $startTime) * 1000);
-        
-        $status = $this->determineStatus($httpCode, $error);
-        
-        return [
-            'status' => $status,
-            'status_code' => $httpCode,
-            'response_time' => $responseTime,
-            'error_message' => $error ?: null,
-        ];
-    }
-    
-    private function determineStatus(int $httpCode, string $error): string {
-        if (!empty($error)) {
-            return 'down';
-        }
-        
-        if ($httpCode >= 200 && $httpCode < 400) {
-            return 'up';
-        }
-        
-        if ($httpCode >= 400 && $httpCode < 500) {
-            return 'warning';
-        }
-        
-        return 'down';
-    }
-}
-```
-
-### 4.2 Create SSLMonitor Service (`src/Services/SSLMonitor.php`)
-```php
-<?php
-namespace App\Services;
-
-class SSLMonitor {
-    public function checkSSL(string $url): array {
-        $parsedUrl = parse_url($url);
-        $host = $parsedUrl['host'] ?? '';
-        $port = $parsedUrl['port'] ?? 443;
-        
-        if (empty($host)) {
-            return [
-                'status' => 'down',
-                'ssl_expiry_date' => null,
-                'error_message' => 'Invalid URL provided',
-            ];
-        }
-        
-        $context = stream_context_create([
-            'ssl' => [
-                'capture_peer_cert' => true,
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-            ],
-        ]);
-        
-        $socket = @stream_socket_client(
-            "ssl://{$host}:{$port}",
-            $errno,
-            $errstr,
-            30,
-            STREAM_CLIENT_CONNECT,
-            $context
-        );
-        
-        if (!$socket) {
-            return [
-                'status' => 'down',
-                'ssl_expiry_date' => null,
-                'error_message' => "SSL connection failed: {$errstr}",
-            ];
-        }
-        
-        $cert = stream_context_get_params($socket)['options']['ssl']['peer_certificate'];
-        fclose($socket);
-        
-        $certData = openssl_x509_parse($cert);
-        $expiryDate = date('Y-m-d', $certData['validTo_time_t']);
-        $daysUntilExpiry = ceil(($certData['validTo_time_t'] - time()) / 86400);
-        
-        $status = $this->determineSSLStatus($daysUntilExpiry);
-        
-        return [
-            'status' => $status,
-            'ssl_expiry_date' => $expiryDate,
-            'error_message' => null,
-        ];
-    }
-    
-    private function determineSSLStatus(int $daysUntilExpiry): string {
-        if ($daysUntilExpiry <= 0) {
-            return 'down';
-        }
-        
-        if ($daysUntilExpiry <= 30) {
-            return 'warning';
-        }
-        
-        return 'up';
-    }
-}
-```
-
-## Phase 5: Main Monitor Script
-
-### 5.1 Create Monitor Script (`monitor.php`)
-```php
-<?php
-require_once 'vendor/autoload.php';
-
-use App\Models\Site;
-use App\Models\MonitoringResult;
-use App\Services\UptimeMonitor;
-use App\Services\SSLMonitor;
-
-// Load environment variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-$debugMode = isset($argv[1]) && $argv[1] === '--debug';
-
-function logMessage(string $message, bool $debug = false): void {
-    global $debugMode;
-    if ($debug && !$debugMode) return;
-    
-    echo '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
-}
-
-try {
-    logMessage('Starting site monitoring...', true);
-    
-    $siteModel = new Site();
-    $resultModel = new MonitoringResult();
-    $uptimeMonitor = new UptimeMonitor();
-    $sslMonitor = new SSLMonitor();
-    
-    $sites = $siteModel->findAll();
-    
-    if (empty($sites)) {
-        logMessage('No sites configured for monitoring.', true);
-        exit(0);
-    }
-    
-    foreach ($sites as $site) {
-        logMessage("Checking site: {$site['name']} ({$site['url']})", true);
-        
-        // Check uptime
-        $uptimeResult = $uptimeMonitor->checkSite($site['url']);
-        $resultModel->create([
-            'site_id' => $site['id'],
-            'check_type' => 'uptime',
-            'status' => $uptimeResult['status'],
-            'response_time' => $uptimeResult['response_time'],
-            'status_code' => $uptimeResult['status_code'],
-            'ssl_expiry_date' => null,
-            'error_message' => $uptimeResult['error_message'],
-        ]);
-        
-        logMessage("Uptime check: {$uptimeResult['status']} ({$uptimeResult['response_time']}ms)", true);
-        
-        // Check SSL if enabled
-        if ($site['ssl_check_enabled']) {
-            $sslResult = $sslMonitor->checkSSL($site['url']);
-            $resultModel->create([
-                'site_id' => $site['id'],
-                'check_type' => 'ssl',
-                'status' => $sslResult['status'],
-                'response_time' => null,
-                'status_code' => null,
-                'ssl_expiry_date' => $sslResult['ssl_expiry_date'],
-                'error_message' => $sslResult['error_message'],
-            ]);
-            
-            logMessage("SSL check: {$sslResult['status']} (expires: {$sslResult['ssl_expiry_date']})", true);
-        }
-    }
-    
-    logMessage('Site monitoring completed.', true);
-    
-} catch (Exception $e) {
-    logMessage('Error: ' . $e->getMessage());
-    exit(1);
-}
-```
-
-## Phase 6: Docker Configuration
-
-### 6.1 Update Dockerfile
-```dockerfile
-FROM php:8.2-fpm
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    cron \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set working directory
-WORKDIR /var/www
-
-# Copy application files
-COPY . .
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www \
-    && chmod -R 755 /var/www/storage \
-    && chmod -R 755 /var/www/logs
-
-# Add cron job for monitoring
-RUN echo "*/5 * * * * cd /var/www && php monitor.php >> /var/www/logs/monitor.log 2>&1" | crontab -
-
-# Start cron and PHP-FPM
-CMD ["sh", "-c", "cron && php-fpm"]
-
-EXPOSE 9000
-```
-
-### 6.2 Update docker-compose.yml
-```yaml
-version: '3.8'
-
-services:
-  app:
-    build: .
-    container_name: php-site-monitor
-    restart: unless-stopped
-    working_dir: /var/www
-    volumes:
-      - ./:/var/www
-      - ./logs:/var/www/logs
-    depends_on:
-      - mysql
-    environment:
-      - DB_HOST=mysql
-      - DB_NAME=site_monitor
-      - DB_USER=monitor_user
-      - DB_PASS=secure_password
-    networks:
-      - monitor-network
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx-site-monitor
-    restart: unless-stopped
-    ports:
-      - "80:80"
-    volumes:
-      - ./:/var/www
-      - ./config/nginx:/etc/nginx/conf.d
-    depends_on:
-      - app
-    networks:
-      - monitor-network
-
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-site-monitor
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: site_monitor
-      MYSQL_USER: monitor_user
-      MYSQL_PASSWORD: secure_password
-      MYSQL_ROOT_PASSWORD: root_password
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./config/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    ports:
-      - "3306:3306"
-    networks:
-      - monitor-network
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: phpmyadmin-site-monitor
-    restart: unless-stopped
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: root
-      PMA_PASSWORD: root_password
-      MYSQL_ROOT_PASSWORD: root_password
-    ports:
-      - "8080:80"
-    depends_on:
-      - mysql
-    networks:
-      - monitor-network
-
-volumes:
-  mysql_data:
-
-networks:
-  monitor-network:
-    driver: bridge
-```
-
-### 6.3 Update Nginx Configuration (`config/nginx/default.conf`)
-```nginx
-server {
-    listen 80;
-    server_name localhost;
-    root /var/www/public;
-    index index.php index.html;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        fastcgi_pass app:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-
-    # Security headers
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header X-Content-Type-Options "nosniff" always;
-}
-```
-
-## Phase 7: Web Interface (Basic)
-
-### 7.1 Create Basic Web Interface (`public/index.php`)
-```php
-<?php
-require_once '../vendor/autoload.php';
-
-use App\Models\Site;
-use App\Models\MonitoringResult;
-
-// Load environment variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->load();
-
-$siteModel = new Site();
-$resultModel = new MonitoringResult();
-
-$action = $_GET['action'] ?? 'dashboard';
-
-switch ($action) {
-    case 'dashboard':
-        $sites = $siteModel->findAll();
-        include 'views/dashboard.php';
-        break;
-    
-    case 'add_site':
-        if ($_POST) {
-            $siteModel->create($_POST);
-            header('Location: index.php');
-            exit;
-        }
-        include 'views/add_site.php';
-        break;
-    
-    case 'site_details':
-        $siteId = (int)$_GET['id'];
-        $site = $siteModel->findById($siteId);
-        $results = $resultModel->findBySiteId($siteId);
-        include 'views/site_details.php';
-        break;
-    
-    default:
-        http_response_code(404);
-        echo '404 Not Found';
-}
-```
-
-## Phase 8: Setup and Deployment Commands
-
-### 8.1 Environment Setup
 ```bash
-# Create .env file
-cat > .env << 'EOF'
-DB_HOST=mysql
-DB_NAME=site_monitor
-DB_USER=monitor_user
-DB_PASS=secure_password
-APP_ENV=development
-APP_DEBUG=true
-EOF
-```
+# Run unit tests
+docker-compose exec app vendor/bin/phpunit
 
-### 8.2 Build and Run
-```bash
-# Build and start containers
-docker-compose up -d --build
-
-# Check logs
+# View application logs
 docker-compose logs -f app
 
-# Run monitoring manually (for testing)
+# Access database via phpMyAdmin
+# Navigate to http://localhost:8080
+
+# Run monitoring manually
 docker-compose exec app php monitor.php --debug
 
-# Access web interface
-open http://localhost:8080
+# Check application status
+docker-compose ps
 ```
 
-### 8.3 Testing
+### Common Development Tasks
+
+```bash
+# Database operations
+docker-compose exec mysql mysql -u monitor_user -p site_monitor
+
+# View monitoring logs
+docker-compose exec app tail -f logs/monitor.log
+
+# Restart specific service
+docker-compose restart app
+
+# Clean rebuild
+docker-compose down
+docker-compose up -d --build
+
+# Clean up everything (removes volumes)
+docker-compose down -v --rmi all
+```
+
+## Production Deployment Considerations
+
+### Environment Configuration
+- Update `.env` file with production database credentials
+- Set `APP_ENV=production` and `APP_DEBUG=false`
+- Configure proper SSL certificates for HTTPS
+- Set up database backups and monitoring
+
+### Security Checklist
+- [ ] Change default database passwords
+- [ ] Enable HTTPS with valid SSL certificates
+- [ ] Configure firewall rules
+- [ ] Set up log rotation
+- [ ] Enable database encryption at rest
+- [ ] Configure session security settings
+- [ ] Set up monitoring and alerting
+
+### Performance Optimization
+- Configure PHP-FPM pool settings
+- Set up Redis for session storage (optional)
+- Enable opcache for PHP
+- Configure database query optimization
+- Set up CDN for static assets
+
+## Troubleshooting Guide
+
+### Common Issues and Solutions
+
+**Database Connection Errors:**
+```bash
+# Check if MySQL container is running
+docker-compose ps mysql
+
+# Verify database credentials in .env
+cat .env
+
+# Check MySQL logs
+docker-compose logs mysql
+```
+
+**Permission Issues:**
+```bash
+# Fix file permissions
+docker-compose exec app chown -R www-data:www-data /var/www
+docker-compose exec app chmod -R 755 /var/www/storage /var/www/logs
+```
+
+**Authentication Problems:**
+```bash
+# Clear sessions table
+docker-compose exec mysql mysql -u monitor_user -p -e "TRUNCATE site_monitor.user_sessions;"
+
+# Reset user password (replace with actual user ID)
+docker-compose exec app php -r "echo password_hash('newpassword', PASSWORD_DEFAULT);"
+
+# Copy the generated hash above, then update the user's password in the database.
+# Example (replace <USER_ID> and <HASH> with actual values):
+docker-compose exec mysql mysql -u monitor_user -p -e "UPDATE site_monitor.users SET password='<HASH>' WHERE id=<USER_ID>;"
+
+# Or, if you use username instead of user ID:
+# docker-compose exec mysql mysql -u monitor_user -p -e \"UPDATE site_monitor.users SET password='<HASH>' WHERE username='actual_username';\"
+```
+
+### Monitoring and Logging
+
+```bash
+# View real-time application logs
+docker-compose logs -f app
+
+# Check monitoring execution
+docker-compose exec app tail -f logs/monitor.log
+
+# View Nginx access logs
+docker-compose logs nginx
+
+# Monitor system resources
+docker stats
+```
+
+## Migration from Basic Setup
+
+If you're upgrading from a basic monitoring setup:
+
+1. **Backup existing data**
+2. **Update database schema** with new user tables
+3. **Migrate existing sites** to new structure
+4. **Set up first admin user**
+5. **Configure authentication** settings
+6. **Test all functionality** before going live
+
+## Next Steps and Future Enhancements
+
+### Implemented Features ✅
+- Complete user authentication and authorization
+- Modern MVC architecture with custom routing
+- Advanced user management with safety protections
+- Responsive UI with Bootstrap 5 and Font Awesome
+- Security hardening and session management
+- Visual statistics dashboard
+
+### Planned Enhancements 🚧
+- Email/SMS notifications for downtime alerts
+- API endpoints for external integrations
+- Advanced SSL monitoring with certificate chain validation
+- Performance metrics and detailed analytics
+- Export/import configurations
+- Webhook integrations
+- Multi-tenant support
+
+This comprehensive setup provides a solid foundation for a production-ready PHP site monitoring application with modern architecture, security best practices, and an intuitive user interface.
 ```bash
 # Run unit tests
 docker-compose exec app vendor/bin/phpunit

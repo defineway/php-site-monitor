@@ -1,25 +1,32 @@
 # PHP Site Monitor
 
-A PHP-based application to monitor website uptime and SSL certificate expiration with a web interface for visualization and configuration.
+A comprehensive PHP-based application to monitor website uptime and SSL certificate expiration with a modern web interface, user authentication, and advanced management features.
 
 ## Features
 
-- **Uptime Monitoring**: Check website availability and response times
-- **SSL Certificate Monitoring**: Monitor SSL certificate expiration dates
-- **Web Interface**: Beautiful dashboard to view monitoring results and manage sites
-- **Configurable Intervals**: Custom monitoring intervals for each site
-- **Docker Support**: Easy deployment with Docker containers (includes phpMyAdmin for DB management)
-- **Automated Monitoring**: Cron job integration for scheduled checks
+- **🔐 User Authentication System**: Secure login/logout with role-based access control (Admin/User roles)
+- **👥 User Management**: Complete CRUD operations for user accounts with safety protections
+- **📊 Uptime Monitoring**: Check website availability and response times
+- **🔒 SSL Certificate Monitoring**: Monitor SSL certificate expiration dates with warnings
+- **🎨 Modern Web Interface**: Beautiful, responsive dashboard with Bootstrap 5 and Font Awesome icons
+- **📈 Statistics Dashboard**: Visual cards showing user counts and system metrics
+- **⚙️ Site Management**: Full CRUD operations for monitored websites
+- **🔧 Configurable Intervals**: Custom monitoring intervals for each site
+- **🐳 Docker Support**: Complete containerization with phpMyAdmin for database management
+- **⏰ Automated Monitoring**: Cron job integration for scheduled checks
+- **🛡️ Security Features**: Password hashing, session management, CSRF protection
+- **📱 Responsive Design**: Mobile-friendly interface with modern UI components
 
 ## Technology Stack
 
-- PHP 8.2
-- MySQL 8.0
-- Nginx
-- Docker & Docker Compose
-- phpMyAdmin (http://localhost:8080)
-- Bootstrap 5 (Frontend)
-- PHPUnit (Testing)
+- **Backend**: PHP 8.2 with MVC Architecture
+- **Database**: MySQL 8.0
+- **Web Server**: Nginx
+- **Frontend**: Bootstrap 5, Font Awesome 6.4.0
+- **Containerization**: Docker & Docker Compose
+- **Database Management**: phpMyAdmin (http://localhost:8080)
+- **Testing**: PHPUnit
+- **Authentication**: Custom session-based auth system
 
 ## Quick Start
 
@@ -37,19 +44,28 @@ A PHP-based application to monitor website uptime and SSL certificate expiration
 3. **Access the web interface**
    - Main app: Open your browser and navigate to `http://localhost`
    - phpMyAdmin: Open your browser and navigate to `http://localhost:8080`
+   - **Default Login**: Use the credentials created during setup (check container logs for initial admin user)
 
-4. **Add your first site**
-   Click "Add New Site" on the dashboard and enter your website details
+4. **First-time Setup**
+   - Create an admin account through the registration process
+   - Log in to access the dashboard
+   - Add your first site for monitoring
 
 ## Project Structure
 
 ```
-├── src/                    # Core PHP classes
-│   ├── Models/            # Data models (Site, MonitoringResult, User, Session)
-│   ├── Services/          # Monitoring and Auth services
-├── public/                # Web interface
-│   ├── index.php         # Main entry point
-│   └── views/            # HTML templates
+├── src/                     # Core PHP classes with MVC architecture
+│   ├── Models/             # Data models (Site, MonitoringResult, User, Session)
+│   ├── Controllers/        # MVC Controllers (Auth, Dashboard, Site, User)
+│   ├── Services/           # Business logic (UptimeMonitor, SSLMonitor, AuthService)
+│   ├── Views/              # HTML templates with modern Bootstrap UI
+│   │   ├── partials/       # Reusable components (header, navigation)
+│   │   ├── auth/           # Authentication views (login, register)
+│   │   ├── sites/          # Site management views
+│   │   └── users/          # User management views
+│   └── Router.php          # Custom routing system
+├── public/                 # Web interface entry point
+│   └── index.php          # Main application router
 ├── config/               # Configuration files
 │   ├── database/         # Database schema
 │   └── nginx/            # Nginx configuration
@@ -66,22 +82,35 @@ A PHP-based application to monitor website uptime and SSL certificate expiration
 
 ## Usage
 
+### Authentication & User Management
+
+1. **Initial Setup**: Register the first admin account
+2. **User Management**: Admins can create, edit, activate/deactivate, and delete users
+3. **Role-Based Access**: Admin and User roles with different permissions
+4. **Security Features**: 
+   - Users cannot delete or modify their own accounts
+   - System prevents deletion of the last active admin
+   - Secure password hashing and session management
+
 ### Adding Sites
 
-1. Navigate to the dashboard
-2. Click "Add New Site"
-3. Fill in the site details:
+1. Log in to the dashboard
+2. Navigate to "Sites" section
+3. Click "Add New Site"
+4. Fill in the site details:
    - **Site Name**: A friendly name for identification
    - **URL**: The full URL to monitor (http:// or https://)
    - **Check Interval**: How often to check uptime (in seconds)
    - **SSL Monitoring**: Enable/disable SSL certificate checking
    - **SSL Check Interval**: How often to check SSL certificates
 
-### Viewing Results
+### Dashboard Features
 
-- The dashboard shows all monitored sites with their current status
-- Click "View Details" on any site to see the monitoring history
-- Status indicators:
+- **Statistics Cards**: Overview of total users, active users, and administrators
+- **Site Status Overview**: Real-time monitoring status for all sites
+- **User Management**: Complete user administration interface
+- **Responsive Navigation**: Modern sidebar navigation with active page highlighting
+- **Status Indicators**: 
   - 🟢 **Up**: Site is accessible and responding normally
   - 🟡 **Warning**: Site has issues (4xx errors, SSL expiring soon)
   - 🔴 **Down**: Site is inaccessible or has critical errors
@@ -109,6 +138,25 @@ docker-compose logs -f app
 ```
 
 ## Development
+
+### Architecture
+
+The application follows a clean MVC (Model-View-Controller) architecture:
+
+- **Models**: Handle database operations and business logic
+- **Controllers**: Process requests and coordinate between models and views
+- **Views**: Render HTML with modern Bootstrap UI components
+- **Services**: Encapsulate complex business logic (monitoring, authentication)
+- **Router**: Custom routing system for clean URLs
+
+### Security Features
+
+- **Password Security**: Bcrypt hashing with proper salt
+- **Session Management**: Secure session handling with database storage
+- **Access Control**: Role-based permissions (Admin/User)
+- **CSRF Protection**: Form tokens to prevent cross-site request forgery
+- **Input Validation**: Proper sanitization and validation of user inputs
+- **Safe Operations**: Prevention of self-account deletion and last admin removal
 
 ### Running Tests
 
@@ -210,12 +258,23 @@ For issues and questions:
 
 ## Roadmap
 
-- [ ] Email/SMS notifications for downtime
+### ✅ Completed Features
+- [x] User Authentication System with role-based access
+- [x] Complete User Management (CRUD with safety protections)
+- [x] Modern UI with Bootstrap 5 and Font Awesome icons
+- [x] MVC Architecture refactoring
+- [x] Security hardening (password hashing, session management)
+- [x] Statistics dashboard with visual metrics
+- [x] Responsive design improvements
+
+### 🚧 Planned Features
+- [ ] Email/SMS notifications for downtime alerts
 - [ ] API endpoints for external integrations
 - [ ] Advanced SSL monitoring (certificate chain validation)
-- [ ] Performance metrics and analytics
-- [ ] Multi-user support with authentication
-- [ ] Mobile-responsive improvements
+- [ ] Performance metrics and detailed analytics
 - [ ] Export/import site configurations
-- [ ] Webhook integrations
-- [ ] Custom alerting rules
+- [ ] Webhook integrations for third-party services
+- [ ] Custom alerting rules and thresholds
+- [ ] Multi-tenant support for organizations
+- [ ] Advanced reporting and historical data analysis
+- [ ] Mobile app companion
