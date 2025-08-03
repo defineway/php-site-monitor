@@ -68,13 +68,13 @@ $currentPage = 'users';
                 <tbody>
                     <?php if (!empty($users)): ?>
                         <?php foreach ($users as $user): ?>
+                            <?php $userStatus = $user['status'] ?? 'inactive'; ?>
                             <tr>
                                 <td><?= htmlspecialchars($user['id'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($user['username'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($user['role'] ?? 'user') ?></td>
                                 <td>
-                                    <?php $userStatus = $user['status'] ?? 'inactive'; ?>
                                     <span class="badge bg-<?= $userStatus === 'active' ? 'success' : 'secondary' ?>">
                                         <?= htmlspecialchars($userStatus) ?>
                                     </span>
@@ -84,7 +84,6 @@ $currentPage = 'users';
                                     <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
                                         <div class="btn-group" role="group">
                                             <a href="?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary">Edit</a>
-                                            <?php $userStatus = $user['status'] ?? 'inactive'; ?>
                                             <?php if ($userStatus === 'active'): ?>
                                                 <a href="?action=deactivate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-warning"
                                                    onclick="return confirm('Deactivate this user?')">Deactivate</a>
