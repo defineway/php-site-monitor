@@ -57,10 +57,6 @@ $currentPage = 'profile';
                                 <input type="email" class="form-control" id="email" name="email" 
                                        value="<?= htmlspecialchars($user['email'] ?? '') ?>">
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">New Password (leave blank to keep current)</label>
-                                <input type="password" class="form-control" id="password" name="password">
-                            </div>
                             <button type="submit" class="btn btn-primary">Update Profile</button>
                         </form>
                     </div>
