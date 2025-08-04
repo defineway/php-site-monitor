@@ -3,11 +3,11 @@ require_once __DIR__ . '/security.php';
 
 // Helper function to format seconds into a human-readable string
 function format_interval($seconds) {
-    if ($seconds < 3600) return ($seconds / 60) . " Minutes";
-    if ($seconds < 86400) return ($seconds / 3600) . " Hours";
-    if ($seconds < 604800) return ($seconds / 86400) . " Days";
-    if ($seconds < 2592000) return ($seconds / 604800) . " Weeks";
-    return ($seconds / 2592000) . " Months";
+    if ($seconds < 3600) return round($seconds / 60) . " Minutes";
+    if ($seconds < 86400) return round($seconds / 3600) . " Hours";
+    if ($seconds < 604800) return round($seconds / 86400) . " Days";
+    if ($seconds < 2592000) return round($seconds / 604800) . " Weeks";
+    return round($seconds / 2592000) . " Months";
 }
 
 // Set current page for navigation highlighting

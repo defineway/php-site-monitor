@@ -30,7 +30,7 @@ class SiteService {
     }
 
     /**
-     * Find all sites for listed in the database
+     * Find all sites listed in the database
      * This method retrieves all sites from the database, regardless of the user.
      * @return Site[] Array of Site objects
      * @throws \Exception if database query fails
