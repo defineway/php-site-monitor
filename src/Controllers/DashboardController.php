@@ -22,7 +22,7 @@ class DashboardController extends BaseController {
             $siteService = new SiteService();
             $resultService = new MonitoringResultService();
 
-            $sites = $siteService->findAll($this->currentUser);
+            $sites = $siteService->findAllByUser($this->currentUser);
             
             foreach ($sites as $site) {
                 $latestResults[$site->getId()] = $resultService->getLatestStatus($site->getId());

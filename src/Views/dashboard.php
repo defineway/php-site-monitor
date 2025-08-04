@@ -75,7 +75,7 @@ $currentPage = 'dashboard';
                             </thead>
                             <tbody>
                                 <?php foreach ($sites as $site): 
-                                    $latest = $latestResults[$site['id']] ?? null;
+                                    $latest = $latestResults[$site->getId()] ?? null;
                                     $statusClass = $latest ? 'status-' . $latest['status'] : 'text-muted';
                                     $statusIcon = '';
                                     switch ($latest['status'] ?? 'unknown') {
@@ -86,8 +86,8 @@ $currentPage = 'dashboard';
                                     }
                                 ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($site['name']) ?></td>
-                                        <td><a href="<?= htmlspecialchars($site['url']) ?>" target="_blank"><?= htmlspecialchars($site['url']) ?></a></td>
+                                        <td><?= htmlspecialchars($site->getName()) ?></td>
+                                        <td><a href="<?= htmlspecialchars($site->getUrl()) ?>" target="_blank"><?= htmlspecialchars($site->getUrl()) ?></a></td>
                                         <td>
                                             <span class="<?= $statusClass ?>">
                                                 <i class="<?= $statusIcon ?>"></i>
@@ -98,13 +98,13 @@ $currentPage = 'dashboard';
                                         <td><?= $latest ? date('M j, H:i', strtotime($latest['checked_at'])) : 'Never' ?></td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="?action=site_details&id=<?= $site['id'] ?>" class="btn btn-sm btn-info">Details</a>
-                                                <a href="?action=edit_site&id=<?= $site['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
-                                                <a href="?action=delete_site&id=<?= $site['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this site?')">Delete</a>
+                                                <a href="?action=site_details&id=<?= $site->getId() ?>" class="btn btn-sm btn-info">Details</a>
+                                                <a href="?action=edit_site&id=<?= $site->getId() ?>" class="btn btn-sm btn-primary">Edit</a>
+                                                <a href="?action=delete_site&id=<?= $site->getId() ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this site?')">Delete</a>
                                             </div>
                                         </td>
                                         <?php if ($currentUser->isAdmin()): ?>
-                                            <td><?= htmlspecialchars($site['username'] ?? 'N/A') ?></td>
+                                            <td><?= htmlspecialchars($site->getUser()->getUsername() ?? 'N/A') ?></td>
                                         <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>

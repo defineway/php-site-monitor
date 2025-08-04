@@ -28,13 +28,31 @@ class SiteService {
         
         return $this->db->lastInsertId();
     }
+
+    /**
+     * Find all sites for listed in the database
+     * This method retrieves all sites from the database, regardless of the user.
+     * @return Site[] Array of Site objects
+     * @throws \Exception if database query fails
+     */
+    public function findAll(): array {
+        $sql = "SELECT s.*, u.username FROM sites s JOIN users u ON s.user_id = u.id ORDER BY s.name";
+        $stmt = $this->db->query($sql);
+        $row = $stmt->fetchAll();
+        
+        if (!$row) {
+            return []; // No sites found
+        }
+        
+        return array_map(fn($item) => new Site($item), $row);
+    }
     
     /**
      * Find all sites for a user or all sites if the user is an admin
      * @return Site[] Array of Site objects
      * @throws \Exception if database query fails
      */
-    public function findAll(User $user): array {
+    public function findAllByUser(User $user): array {
         if ($user->isAdmin()) {
             $sql = "SELECT s.*, u.username FROM sites s JOIN users u ON s.user_id = u.id ORDER BY s.name";
             $stmt = $this->db->query($sql);

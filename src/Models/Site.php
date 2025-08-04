@@ -98,4 +98,8 @@ class Site {
     public function getCreatedAt(): ?string {
         return $this->created_at;
     }
+
+    public function getUser(): User {
+        return $this->user;
+    }
 }
