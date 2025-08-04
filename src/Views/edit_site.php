@@ -24,30 +24,30 @@ $currentPage = 'edit_site';
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
-        <form action="?action=edit_site&id=<?= htmlspecialchars($site['id']) ?>" method="post">
+        <form action="?action=edit_site&id=<?= htmlspecialchars($site->getId()) ?>" method="post">
             <div class="mb-3">
                 <label for="name" class="form-label">Site Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="<?= htmlspecialchars($site['name'] ?? '') ?>" required>
+                <input type="text" class="form-control" id="name" name="name" value="<?= htmlspecialchars($site->getName() ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label for="url" class="form-label">URL</label>
-                <input type="url" class="form-control" id="url" name="url" value="<?= htmlspecialchars($site['url'] ?? '') ?>" required>
+                <input type="url" class="form-control" id="url" name="url" value="<?= htmlspecialchars($site->getUrl() ?? '') ?>" required>
             </div>
             <div class="mb-3">
                 <label for="check_interval" class="form-label">Check Interval</label>
                 <select class="form-select" id="check_interval" name="check_interval">
-                    <option value="1" <?= ($site['check_interval'] ?? 5) == 1 ? 'selected' : '' ?>>Every Minute</option>
-                    <option value="5" <?= ($site['check_interval'] ?? 5) == 5 ? 'selected' : '' ?>>Every 5 Minutes</option>
-                    <option value="10" <?= ($site['check_interval'] ?? 5) == 10 ? 'selected' : '' ?>>Every 10 Minutes</option>
-                    <option value="15" <?= ($site['check_interval'] ?? 5) == 15 ? 'selected' : '' ?>>Every 15 Minutes</option>
-                    <option value="30" <?= ($site['check_interval'] ?? 5) == 30 ? 'selected' : '' ?>>Every 30 Minutes</option>
-                    <option value="60" <?= ($site['check_interval'] ?? 5) == 60 ? 'selected' : '' ?>>Every Hour</option>
-                    <option value="720" <?= ($site['check_interval'] ?? 5) == 720 ? 'selected' : '' ?>>Every 12 Hours</option>
-                    <option value="1440" <?= ($site['check_interval'] ?? 5) == 1440 ? 'selected' : '' ?>>Every Day</option>
+                    <option value="1" <?= ($site->getCheckInterval() ?? 5) == 1 ? 'selected' : '' ?>>Every Minute</option>
+                    <option value="5" <?= ($site->getCheckInterval() ?? 5) == 5 ? 'selected' : '' ?>>Every 5 Minutes</option>
+                    <option value="10" <?= ($site->getCheckInterval() ?? 5) == 10 ? 'selected' : '' ?>>Every 10 Minutes</option>
+                    <option value="15" <?= ($site->getCheckInterval() ?? 5) == 15 ? 'selected' : '' ?>>Every 15 Minutes</option>
+                    <option value="30" <?= ($site->getCheckInterval() ?? 5) == 30 ? 'selected' : '' ?>>Every 30 Minutes</option>
+                    <option value="60" <?= ($site->getCheckInterval() ?? 5) == 60 ? 'selected' : '' ?>>Every Hour</option>
+                    <option value="720" <?= ($site->getCheckInterval() ?? 5) == 720 ? 'selected' : '' ?>>Every 12 Hours</option>
+                    <option value="1440" <?= ($site->getCheckInterval() ?? 5) == 1440 ? 'selected' : '' ?>>Every Day</option>
                 </select>
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="ssl_check_enabled" name="ssl_check_enabled" value="1" <?= !empty($site['ssl_check_enabled']) ? 'checked' : '' ?>>
+                <input type="checkbox" class="form-check-input" id="ssl_check_enabled" name="ssl_check_enabled" value="1" <?= !empty($site->isSslCheckEnabled()) ? 'checked' : '' ?>>
                 <label class="form-check-label" for="ssl_check_enabled">Enable SSL Certificate Check</label>
             </div>
             <div class="mb-3">

@@ -93,7 +93,7 @@ $currentPage = 'site_details';
         <div class="mt-3">
             <a href="index.php" class="btn btn-secondary">Back to Dashboard</a>
             <?php if (isset($site)): ?>
-                <a href="?action=edit_site&id=<?= $site['id'] ?? '' ?>" class="btn btn-primary">Edit Site</a>
+                <a href="?action=edit_site&id=<?= $site->getId() ?? '' ?>" class="btn btn-primary">Edit Site</a>
             <?php endif; ?>
         </div>
     </div>
