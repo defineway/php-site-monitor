@@ -1,10 +1,10 @@
 <?php
 require_once 'vendor/autoload.php';
 
-use App\Models\Site;
-use App\Models\MonitoringResult;
 use App\Services\UptimeMonitor;
 use App\Services\SSLMonitor;
+use App\Services\SiteService;
+use App\Services\MonitoringResultService;
 
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -21,13 +21,13 @@ function logMessage(string $message, bool $debug = false): void {
 
 try {
     logMessage('Starting site monitoring...', true);
-    
-    $siteModel = new Site();
-    $resultModel = new MonitoringResult();
+
+    $siteService = new SiteService();
+    $monitoringResultService = new MonitoringResultService();
     $uptimeMonitor = new UptimeMonitor();
     $sslMonitor = new SSLMonitor();
-    
-    $sites = $siteModel->findAll();
+
+    $sites = $siteService->findAll();
     
     if (empty($sites)) {
         logMessage('No sites configured for monitoring.', true);
@@ -35,12 +35,12 @@ try {
     }
     
     foreach ($sites as $site) {
-        logMessage("Checking site: {$site['name']} ({$site['url']})", true);
-        
+        logMessage("Checking site: {$site->getName()} ({$site->getUrl()})", true);
+
         // Check uptime
-        $uptimeResult = $uptimeMonitor->checkSite($site['url']);
-        $resultModel->create([
-            'site_id' => $site['id'],
+        $uptimeResult = $uptimeMonitor->checkSite($site->getUrl());
+        $monitoringResultService->create([
+            'site_id' => $site->getId(),
             'check_type' => 'uptime',
             'status' => $uptimeResult['status'],
             'response_time' => $uptimeResult['response_time'],
@@ -52,10 +52,10 @@ try {
         logMessage("Uptime check: {$uptimeResult['status']} ({$uptimeResult['response_time']}ms)", true);
         
         // Check SSL if enabled
-        if ($site['ssl_check_enabled']) {
-            $sslResult = $sslMonitor->checkSSL($site['url']);
-            $resultModel->create([
-                'site_id' => $site['id'],
+        if ($site->isSslCheckEnabled()) {
+            $sslResult = $sslMonitor->checkSSL($site->getUrl());
+            $monitoringResultService->create([
+                'site_id' => $site->getId(),
                 'check_type' => 'ssl',
                 'status' => $sslResult['status'],
                 'response_time' => null,

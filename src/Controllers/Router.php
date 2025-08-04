@@ -42,6 +42,9 @@ class Router {
         $this->routes['delete_user'] = [UserController::class, 'delete'];
         $this->routes['activate_user'] = [UserController::class, 'activate'];
         $this->routes['deactivate_user'] = [UserController::class, 'deactivate'];
+
+        // PhpInfo route
+        $this->routes['phpinfo'] = [PhpInfoController::class, 'index'];
     }
     
     /**

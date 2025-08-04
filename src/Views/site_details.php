@@ -1,9 +1,17 @@
 <?php 
 require_once __DIR__ . '/security.php'; 
 
+// Helper function to format seconds into a human-readable string
+function format_interval($seconds) {
+    if ($seconds < 3600) return round($seconds / 60) . " Minutes";
+    if ($seconds < 86400) return round($seconds / 3600) . " Hours";
+    if ($seconds < 604800) return round($seconds / 86400) . " Days";
+    if ($seconds < 2592000) return round($seconds / 604800) . " Weeks";
+    return round($seconds / 2592000) . " Months";
+}
+
 // Set current page for navigation highlighting
 $currentPage = 'site_details';
-// $currentUser is provided by the controller
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,12 +31,16 @@ $currentPage = 'site_details';
         <?php if (isset($site)): ?>
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><?= htmlspecialchars($site['name']) ?></h5>
+                    <h5><?= htmlspecialchars($site->getName() ?? 'N/A') ?></h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site['url']) ?>" target="_blank"><?= htmlspecialchars($site['url']) ?></a></p>
-                    <p><strong>Check Interval:</strong> <?= htmlspecialchars($site['check_interval']) ?> minutes</p>
-                    <p><strong>Created:</strong> <?= htmlspecialchars($site['created_at']) ?></p>
+                    <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site->getUrl() ?? '#') ?>" target="_blank"><?= htmlspecialchars($site->getUrl() ?? 'N/A') ?></a></p>
+                    <p><strong>Check Interval:</strong> Every <?= htmlspecialchars($site->getCheckInterval() ?? 'N/A') ?> minutes</p>
+                    <p><strong>SSL Check Enabled:</strong> <?= ($site->isSslCheckEnabled() ?? 0) ? 'Yes' : 'No' ?></p>
+                    <?php if ($site->isSslCheckEnabled()): ?>
+                        <p><strong>SSL Check Frequency:</strong> Every <?= format_interval($site->getSslCheckInterval() ?? 86400) ?></p>
+                    <?php endif; ?>
+                    <p><strong>Created:</strong> <?= htmlspecialchars($site->getCreatedAt() ?? 'N/A') ?></p>
                 </div>
             </div>
             
@@ -49,14 +61,23 @@ $currentPage = 'site_details';
                             <?php foreach ($results as $result): ?>
                                 <tr>
                                     <td>
-                                        <span class="badge bg-<?= $result['status'] === 'up' ? 'success' : ($result['status'] === 'down' ? 'danger' : 'warning') ?>">
-                                            <?= htmlspecialchars($result['status']) ?>
+                                        <?php
+                                            $status = $result->getStatus() ?? 'unknown';
+                                            $badgeClass = 'warning'; // Default
+                                            if ($status === 'up') {
+                                                $badgeClass = 'success';
+                                            } elseif ($status === 'down') {
+                                                $badgeClass = 'danger';
+                                            }
+                                        ?>
+                                        <span class="badge bg-<?= $badgeClass ?>">
+                                            <?= htmlspecialchars($status) ?>
                                         </span>
                                     </td>
-                                    <td><?= htmlspecialchars($result['response_time']) ?>ms</td>
-                                    <td><?= htmlspecialchars($result['http_status_code']) ?></td>
-                                    <td><?= htmlspecialchars($result['checked_at']) ?></td>
-                                    <td><?= htmlspecialchars($result['message']) ?></td>
+                                    <td><?= htmlspecialchars($result->getResponseTime() ?? 'N/A') ?>ms</td>
+                                    <td><?= htmlspecialchars($result->getStatusCode() ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($result->getCheckedAt() ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($result->getErrorMessage() ?? '') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -72,7 +93,7 @@ $currentPage = 'site_details';
         <div class="mt-3">
             <a href="index.php" class="btn btn-secondary">Back to Dashboard</a>
             <?php if (isset($site)): ?>
-                <a href="?action=edit_site&id=<?= $site['id'] ?>" class="btn btn-primary">Edit Site</a>
+                <a href="?action=edit_site&id=<?= $site->getId() ?? '' ?>" class="btn btn-primary">Edit Site</a>
             <?php endif; ?>
         </div>
     </div>

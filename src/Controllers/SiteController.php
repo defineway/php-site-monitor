@@ -3,6 +3,8 @@ namespace App\Controllers;
 
 use App\Models\Site;
 use App\Models\MonitoringResult;
+use App\Services\SiteService;
+use App\Services\MonitoringResultService;
 use Exception;
 
 class SiteController extends BaseController {
@@ -20,8 +22,8 @@ class SiteController extends BaseController {
             $formData = $_POST;
             
             try {
-                $siteModel = new Site();
-                $siteModel->create($_POST);
+                $siteService = new SiteService();
+                $siteService->create($_POST, $this->currentUser->getId());
                 $this->redirectWithSuccess('index.php', 'site_added');
             } catch (Exception $e) {
                 $error = 'Failed to add site: ' . $e->getMessage();
@@ -29,7 +31,6 @@ class SiteController extends BaseController {
         }
         
         $this->render('add_site', [
-            'currentUser' => $this->currentUser,
             'error' => $error,
             'formData' => $formData
         ]);
@@ -42,9 +43,9 @@ class SiteController extends BaseController {
         $this->requireAuth();
         
         $siteId = (int)($_GET['id'] ?? 0);
-        $siteModel = new Site();
-        $site = $siteModel->findById($siteId);
-        
+        $siteService = new SiteService();
+        $site = $siteService->findById($siteId, $this->currentUser);
+
         if (!$site) {
             $this->redirectWithError('index.php', 'site_not_found');
         }
@@ -53,7 +54,7 @@ class SiteController extends BaseController {
         
         if ($_POST) {
             try {
-                $siteModel->update($siteId, $_POST);
+                $siteService->update($siteId, $_POST, $this->currentUser);
                 $this->redirectWithSuccess('index.php', 'site_updated');
             } catch (Exception $e) {
                 $error = 'Failed to update site: ' . $e->getMessage();
@@ -61,7 +62,6 @@ class SiteController extends BaseController {
         }
         
         $this->render('edit_site', [
-            'currentUser' => $this->currentUser,
             'site' => $site,
             'error' => $error
         ]);
@@ -74,18 +74,17 @@ class SiteController extends BaseController {
         $this->requireAuth();
         
         $siteId = (int)($_GET['id'] ?? 0);
-        $siteModel = new Site();
-        $resultModel = new MonitoringResult();
-        
-        $site = $siteModel->findById($siteId);
+        $siteService = new SiteService();
+        $monitoringResultService = new MonitoringResultService();
+
+        $site = $siteService->findById($siteId, $this->currentUser);
         if (!$site) {
             $this->redirectWithError('index.php', 'site_not_found');
         }
-        
-        $results = $resultModel->findBySiteId($siteId, 50); // Last 50 results
-        
+
+        $results = $monitoringResultService->findBySiteId($siteId, 50); // Last 50 results
+
         $this->render('site_details', [
-            'currentUser' => $this->currentUser,
             'site' => $site,
             'results' => $results
         ]);
@@ -100,8 +99,8 @@ class SiteController extends BaseController {
         $siteId = (int)($_GET['id'] ?? 0);
         
         try {
-            $siteModel = new Site();
-            $siteModel->delete($siteId);
+            $siteService = new SiteService();
+            $siteService->delete($siteId, $this->currentUser);
             $this->redirectWithSuccess('index.php', 'site_deleted');
         } catch (Exception $e) {
             $this->redirectWithError('index.php', 'delete_failed');

@@ -1,57 +1,90 @@
 <?php
 namespace App\Models;
 
-use App\Config\Database;
-
 class MonitoringResult {
-    private $db;
-    
-    public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
-    }
-    
-    public function create(array $data): int {
-        $sql = "INSERT INTO monitoring_results (site_id, check_type, status, response_time, status_code, ssl_expiry_date, error_message) 
-                VALUES (:site_id, :check_type, :status, :response_time, :status_code, :ssl_expiry_date, :error_message)";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($data);
-        
-        return $this->db->lastInsertId();
-    }
-    
-    public function findBySiteId(int $siteId, int $limit = 50): array {
-        $sql = "SELECT * FROM monitoring_results WHERE site_id = :site_id 
-                ORDER BY checked_at DESC LIMIT :limit";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':site_id', $siteId, \PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll();
-    }
-    
-    public function getLatestStatus(int $siteId): ?array {
-        $sql = "SELECT * FROM monitoring_results WHERE site_id = :site_id 
-                ORDER BY checked_at DESC LIMIT 1";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['site_id' => $siteId]);
-        
-        $result = $stmt->fetch();
-        return $result ?: null;
-    }
-    
-    public function getLatestStatusForAllSites(): array {
-        $sql = "SELECT mr1.* FROM monitoring_results mr1
-                INNER JOIN (
-                    SELECT site_id, MAX(checked_at) as max_checked_at
-                    FROM monitoring_results
-                    GROUP BY site_id
-                ) mr2 ON mr1.site_id = mr2.site_id AND mr1.checked_at = mr2.max_checked_at";
-        
-        $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
-    }
+    private $id;
+    private $siteId;
+    private $checkType;
+    private $status;
+    private $responseTime;
+    private $statusCode;
+    private $sslExpiryDate;
+    private $errorMessage;
+    private $checkedAt;
+
+	private Site $site; // Site object for the site being monitored
+
+	/**
+	 * Constructor to initialize the MonitoringResult object with data
+	 * @param array $data
+	 */
+	public function __construct(array $data = []) {
+		$this->id = $data['id'] ?? null;
+		$this->siteId = $data['site_id'] ?? null;
+		$this->checkType = $data['check_type'] ?? null;
+		$this->status = $data['status'] ?? null;
+		$this->responseTime = $data['response_time'] ?? null;
+		$this->statusCode = $data['status_code'] ?? null;
+		$this->sslExpiryDate = $data['ssl_expiry_date'] ?? null;
+		$this->errorMessage = $data['error_message'] ?? null;
+		$this->checkedAt = $data['checked_at'] ?? null;
+
+		$this->site = new Site(); // Initialize with an empty Site object
+		if( $this->siteId ) {
+			$this->site->setId($data['site_id']);
+		}
+	}
+
+	public function setId(int $id): void {
+		$this->id = $id;
+	}
+
+	public function getId(): ?int {
+		return $this->id;
+	}
+
+	public function setSiteId(int $siteId): void {
+		$this->siteId = $siteId;
+		$this->site->setId($siteId);
+	}
+
+	public function getSiteId(): ?int {
+		return $this->siteId;
+	}
+
+	public function getCheckType(): ?string {
+		return $this->checkType;
+	}
+
+	public function getStatus(): ?string {
+		return $this->status;
+	}
+
+	public function getResponseTime(): ?float {
+		return $this->responseTime;
+	}
+
+	public function getStatusCode(): ?int {
+		return $this->statusCode;
+	}
+
+	public function getSslExpiryDate(): ?string {
+		return $this->sslExpiryDate;
+	}
+
+	public function getErrorMessage(): ?string {
+		return $this->errorMessage;
+	}
+
+	public function getCheckedAt(): ?string {
+		return $this->checkedAt;
+	}
+
+	public function getSite(): Site {
+		return $this->site;
+	}
+
+	public function setSite(Site $site): void {
+		$this->site = $site;
+	}
 }

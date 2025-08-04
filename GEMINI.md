@@ -14,6 +14,7 @@ This project is a comprehensive PHP-based application to monitor the uptime of v
 - Security hardening and session management
 - Visual statistics dashboard
 - Safety protections (prevent self-deletion, last admin protection)
+- **Background monitoring** via cron job
 
 ## Technology Stack
 - **Backend**: PHP 8.2 with MVC architecture
@@ -30,11 +31,25 @@ This project is a comprehensive PHP-based application to monitor the uptime of v
 ## Commands
 - **Install dependencies**: `composer install`
 - **Start application**: `docker-compose up -d --build`
-- **Run monitor script**: `php monitor.php` or `docker-compose exec app php monitor.php`
+- **Run monitor script (manual)**: `docker-compose exec app php monitor.php`
 - **Run with debug**: `docker-compose exec app php monitor.php --debug`
 - **Run tests**: `vendor/bin/phpunit` or `docker-compose exec app vendor/bin/phpunit`
 - **Access phpMyAdmin**: Open http://localhost:8080 in browser
 - **View logs**: `docker-compose logs -f app` or `docker-compose exec app tail -f logs/monitor.log`
+
+## Cron Job Setup
+To run the monitoring script automatically, you can set up a cron job.
+
+1.  **Open your crontab:**
+    ```bash
+    crontab -e
+    ```
+
+2.  **Add the following line to run the monitor every minute:**
+    ```bash
+    * * * * * cd /path/to/your/project && /usr/bin/docker-compose exec -T app php monitor.php >> /dev/null 2>&1
+    ```
+    > **Note:** Replace `/path/to/your/project` with the absolute path to your project directory.
 
 ## Enhanced Directory Structure
 - `src/`: Core PHP classes with MVC architecture
@@ -76,6 +91,7 @@ This project is a comprehensive PHP-based application to monitor the uptime of v
 - **🛡️ Safety Protections**: Prevent self-account deletion, last admin protection
 - **📈 Visual Feedback**: Alert system with dismissible notifications
 - **🎯 Role-Based Access**: Different permissions for Admin and User roles
+- **🔄 Background Monitoring**: Automated site checks via cron job
 
 ## Security Implementation
 - Password hashing with bcrypt and proper salting
@@ -98,6 +114,7 @@ This project is a comprehensive PHP-based application to monitor the uptime of v
 6. **UI/UX Enhancement** (Phase 6): Modern Bootstrap 5 interface with icons
 7. **Security Hardening** (Phase 7): Safety protections and input validation
 8. **Bug Fixes & Polish** (Phase 8): Redirect loops, double headers, PHP warnings
+9. **Background Monitoring** (Phase 9): Added cron job support for automated checks
 
 ### 🎯 Current State
 The project is **PRODUCTION READY** with a comprehensive feature set:
@@ -107,6 +124,7 @@ The project is **PRODUCTION READY** with a comprehensive feature set:
 - Robust security implementation
 - Docker-based deployment ready
 - Comprehensive documentation
+- Automated background monitoring
 
 ### 📋 Technical Achievements
 - **Architecture**: Clean MVC pattern with custom routing
@@ -130,4 +148,5 @@ The project is **PRODUCTION READY** with a comprehensive feature set:
 - Modern responsive design ensures compatibility across devices
 - The project structure supports easy maintenance and future feature additions
 - README provides detailed project and usage info.
-- 
+- Automated background monitoring is now supported via cron jobs.
+ 

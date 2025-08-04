@@ -12,6 +12,13 @@ RUN apt-get update && apt-get install -y \
     cron \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+# Install Xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# Xdebug configuration (default: remote debug enabled)
+COPY ./config/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

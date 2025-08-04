@@ -49,7 +49,7 @@ $currentPage = 'users';
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1><i class="fas fa-users me-2 text-primary"></i>User Management</h1>
-            <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
+            <?php if (is_object($currentUser) && $currentUser->isAdmin()): ?>
                 <a href="?action=add_user" class="btn btn-primary">
                     <i class="fas fa-user-plus me-2"></i>Add New User
                 </a>
@@ -65,8 +65,8 @@ $currentPage = 'users';
         if (!empty($users)) {
             foreach ($users as $user) {
                 $totalUsers++;
-                $isActive = ($user['status'] ?? 'inactive') === 'active';
-                $isAdmin = ($user['role'] ?? 'user') === 'admin';
+                $isActive = $user->isActive();
+                $isAdmin = $user->isAdmin();
                 if ($isActive) $activeUsers++;
                 if ($isAdmin) $adminUsers++;
                 if ($isAdmin && $isActive) $activeAdminUsers++;
@@ -150,18 +150,18 @@ $currentPage = 'users';
                 <tbody>
                     <?php if (!empty($users)): ?>
                         <?php foreach ($users as $user): ?>
-                            <?php $userStatus = $user['status'] ?? 'inactive'; ?>
+                            <?php $userStatus = $user->isActive() ? 'active' : 'inactive'; ?>
                             <tr>
-                                <td><?= htmlspecialchars($user['id'] ?? '') ?></td>
-                                <td><?= htmlspecialchars($user['username'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user->getId()) ?></td>
+                                <td><?= htmlspecialchars($user->getUsername()) ?></td>
                                 <td>
                                     <i class="fas fa-envelope me-1 text-muted"></i>
-                                    <?= htmlspecialchars($user['email'] ?? '') ?>
+                                    <?= htmlspecialchars($user->getEmail()) ?>
                                 </td>
                                 <td>
-                                    <span class="badge bg-<?= ($user['role'] ?? 'user') === 'admin' ? 'primary' : 'info' ?>">
-                                        <i class="fas fa-<?= ($user['role'] ?? 'user') === 'admin' ? 'crown' : 'user' ?> me-1"></i>
-                                        <?= htmlspecialchars($user['role'] ?? 'user') ?>
+                                    <span class="badge bg-<?= $user->getRole() === 'admin' ? 'primary' : 'info' ?>">
+                                        <i class="fas fa-<?= $user->getRole() === 'admin' ? 'crown' : 'user' ?> me-1"></i>
+                                        <?= htmlspecialchars($user->getRole()) ?>
                                     </span>
                                 </td>
                                 <td>
@@ -170,32 +170,32 @@ $currentPage = 'users';
                                         <?= htmlspecialchars($userStatus) ?>
                                     </span>
                                 </td>
-                                <td><?= htmlspecialchars($user['created_at'] ?? '') ?></td>
+                                <td><?= htmlspecialchars($user->getCreatedAt()) ?></td>
                                 <td>
-                                    <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
+                                    <?php if (isset($currentUser) && $currentUser->getRole() === 'admin'): ?>
                                         <?php 
                                         // Check if this user is an active admin and would be the last one
-                                        $isThisUserActiveAdmin = ($user['role'] ?? 'user') === 'admin' && ($user['status'] ?? 'inactive') === 'active';
+                                        $isThisUserActiveAdmin = ($user->getRole() ?? 'user') === 'admin' && ($userStatus ?? 'inactive') === 'active';
                                         $wouldBeLastActiveAdmin = $isThisUserActiveAdmin && $activeAdminUsers <= 1;
                                         ?>
                                         <div class="btn-group" role="group">
-                                            <a href="?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-primary" title="Edit User">
+                                            <a href="?action=edit_user&id=<?= $user->getId() ?>" class="btn btn-sm btn-outline-primary" title="Edit User">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <?php if ($user['id'] != $currentUser['id']): ?>
+                                            <?php if ($user->getId() != $currentUser->getId()): ?>
                                                 <?php if ($userStatus === 'active'): ?>
                                                     <?php if ($wouldBeLastActiveAdmin): ?>
                                                         <button class="btn btn-sm btn-secondary" disabled title="Cannot deactivate the last active admin">
                                                             <i class="fas fa-shield-alt"></i>
                                                         </button>
                                                     <?php else: ?>
-                                                        <a href="?action=deactivate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-warning" title="Deactivate User"
+                                                        <a href="?action=deactivate_user&id=<?= $user->getId() ?>" class="btn btn-sm btn-outline-warning" title="Deactivate User"
                                                            onclick="return confirm('Deactivate this user?')">
                                                             <i class="fas fa-user-slash"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 <?php else: ?>
-                                                    <a href="?action=activate_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-outline-success" title="Activate User">
+                                                    <a href="?action=activate_user&id=<?= $user->getId() ?>" class="btn btn-sm btn-outline-success" title="Activate User">
                                                         <i class="fas fa-user-check"></i>
                                                     </a>
                                                 <?php endif; ?>
@@ -204,13 +204,13 @@ $currentPage = 'users';
                                                     <i class="fas fa-user-lock"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            <?php if ($user['id'] != $currentUser['id']): ?>
+                                            <?php if ($user->getId() != $currentUser->getId()): ?>
                                                 <?php if ($wouldBeLastActiveAdmin): ?>
                                                     <button class="btn btn-sm btn-secondary" disabled title="Cannot delete the last active admin">
                                                         <i class="fas fa-shield-alt"></i>
                                                     </button>
                                                 <?php else: ?>
-                                                    <a href="?action=delete_user&id=<?= $user['id'] ?>&hard=true" class="btn btn-sm btn-danger" title="Delete User Permanently"
+                                                    <a href="?action=delete_user&id=<?= $user->getId() ?>&hard=true" class="btn btn-sm btn-danger" title="Delete User Permanently"
                                                        onclick="return confirm('Are you sure you want to PERMANENTLY DELETE this user? This action cannot be undone.')">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </a>

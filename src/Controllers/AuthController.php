@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\User;
+use App\Services\UserService;
 use Exception;
 
 class AuthController extends BaseController {
@@ -50,8 +50,8 @@ class AuthController extends BaseController {
             $formData = $_POST;
             
             try {
-                $userModel = new User();
-                $userModel->create([
+                $userService = new UserService();
+                $userService->create([
                     'username' => $_POST['username'],
                     'email' => $_POST['email'],
                     'password' => $_POST['password'],
@@ -91,7 +91,7 @@ class AuthController extends BaseController {
                 $error = 'Current and new password required.';
             } else {
                 $result = $this->authService->changePassword(
-                    $this->currentUser['id'], 
+                    $this->currentUser->getId(), 
                     $_POST['current_password'], 
                     $_POST['new_password']
                 );
