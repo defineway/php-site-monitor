@@ -12,9 +12,12 @@ This project is a comprehensive PHP-based application to monitor the uptime of v
 - Advanced user management with role-based access control
 - Responsive UI with Bootstrap 5 and Font Awesome icons
 - Security hardening and session management
-- Visual statistics dashboard
+- **Enhanced visual statistics dashboard with metrics**
 - Safety protections (prevent self-deletion, last admin protection)
-- **Background monitoring** via cron job
+- **Intelligent monitoring system with configurable intervals**
+- **Separate uptime and SSL monitoring views**
+- **Xdebug development support and VS Code integration**
+- **Background monitoring** via cron job with interval management
 
 ## Technology Stack
 - **Backend**: PHP 8.2 with MVC architecture
@@ -27,15 +30,18 @@ This project is a comprehensive PHP-based application to monitor the uptime of v
 - **Package Management**: Composer for PHP dependencies
 - **Version Control**: Git with comprehensive .gitignore
 - **Testing**: PHPUnit for unit and integration tests
+- **Development**: Xdebug support with VS Code debugging configuration
+- **Monitoring**: Intelligent interval-based cron scheduling
 
 ## Commands
 - **Install dependencies**: `composer install`
 - **Start application**: `docker-compose up -d --build`
 - **Run monitor script (manual)**: `docker-compose exec app php monitor.php`
-- **Run with debug**: `docker-compose exec app php monitor.php --debug`
+- **Run with debug**: `docker-compose exec app php monitor.php --debug` (shows interval calculations)
 - **Run tests**: `vendor/bin/phpunit` or `docker-compose exec app vendor/bin/phpunit`
 - **Access phpMyAdmin**: Open http://localhost:8080 in browser
 - **View logs**: `docker-compose logs -f app` or `docker-compose exec app tail -f logs/monitor.log`
+- **VS Code debugging**: Use "Listen for Xdebug" launch configuration
 
 ## Cron Job Setup
 To run the monitoring script automatically, you can set up a cron job.

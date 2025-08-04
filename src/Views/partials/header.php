@@ -1,7 +1,15 @@
 <?php
 /**
- * Navigation header component
- * Include this in all authenticated pages
+ * PHP Site Monitor - Navigation Header Component
+ *
+ * @author Sushovan Mukherjee
+ * @copyright 2025 Defineway Technologies Private Limited
+ * @link https://defineway.com
+ * @contact sushovan@defineway.com
+ *
+ * Licensed under the MIT License with Attribution Clause.
+ * You must retain visible credit to the company ("Powered by Defineway Technologies Private Limited")
+ * in the user interface and documentation of any derivative works or public deployments.
  */
 ?>
 <!-- Navigation -->

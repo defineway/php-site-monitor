@@ -1,5 +1,18 @@
 <?php
-// Security: Define constant to prevent direct access to view files
+/**
+ * PHP Site Monitor
+ *
+ * @author Sushovan Mukherjee
+ * @copyright 2025 Defineway Technologies Private Limited
+ * @link https://defineway.com
+ * @contact sushovan@defineway.com
+ *
+ * Licensed under the MIT License with Attribution Clause.
+ * You must retain visible credit to the company ("Powered by Defineway Technologies Private Limited")
+ * in the user interface and documentation of any derivative works or public deployments.
+ */
+
+// Set the application running flag before any includes
 define('APP_RUNNING', true);
 
 require_once '../vendor/autoload.php';

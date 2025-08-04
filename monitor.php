@@ -1,5 +1,18 @@
 <?php
-require_once 'vendor/autoload.php';
+/**
+ * PHP Site Monitor - CLI Monitoring Script
+ *
+ * @author Sushovan Mukherjee
+ * @copyright 2025 Defineway Technologies Private Limited
+ * @link https://defineway.com
+ * @contact sushovan@defineway.com
+ *
+ * Licensed under the MIT License with Attribution Clause.
+ * You must retain visible credit to the company ("Powered by Defineway Technologies Private Limited")
+ * in the user interface and documentation of any derivative works or public deployments.
+ */
+
+require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Services\UptimeMonitor;
 use App\Services\SSLMonitor;

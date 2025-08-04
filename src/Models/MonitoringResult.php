@@ -1,16 +1,28 @@
 <?php
+/**
+ * PHP Site Monitor
+ *
+ * @author Sushovan Mukherjee
+ * @copyright 2025 Defineway Technologies Private Limited
+ * @link https://defineway.com
+ * @contact sushovan@defineway.com
+ *
+ * Licensed under the MIT License with Attribution Clause.
+ * You must retain visible credit to the company ("Powered by Defineway Technologies Private Limited")
+ * in the user interface and documentation of any derivative works or public deployments.
+ */
 namespace App\Models;
 
 class MonitoringResult {
-    private $id;
-    private $siteId;
-    private $checkType;
-    private $status;
-    private $responseTime;
-    private $statusCode;
-    private $sslExpiryDate;
-    private $errorMessage;
-    private $checkedAt;
+	private $id;
+	private $siteId;
+	private $checkType;
+	private $status;
+	private $responseTime;
+	private $statusCode;
+	private $sslExpiryDate;
+	private $errorMessage;
+	private $checkedAt;
 
 	private Site $site; // Site object for the site being monitored
 

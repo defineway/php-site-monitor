@@ -12,9 +12,11 @@ The project is fully implemented with all major features completed:
 - ✅ Advanced user management with safety protections
 - ✅ Responsive UI with Bootstrap 5 and Font Awesome icons
 - ✅ Security hardening and session management
-- ✅ Visual statistics dashboard
-- ✅ Site monitoring functionality (uptime + SSL)
+- ✅ Visual statistics dashboard with enhanced metrics
+- ✅ Intelligent site monitoring (uptime + SSL) with interval management
 - ✅ Docker containerization with phpMyAdmin
+- ✅ Xdebug development support and VS Code integration
+- ✅ Enhanced UI with separate monitoring views
 
 ## Technology Stack
 - **Backend**: PHP 8.2 with MVC architecture
@@ -26,6 +28,8 @@ The project is fully implemented with all major features completed:
 - **Database Management**: phpMyAdmin (http://localhost:8080)
 - **Package Management**: Composer for PHP dependencies
 - **Testing**: PHPUnit for unit and integration tests
+- **Development**: Xdebug support with VS Code configuration
+- **Monitoring**: Intelligent interval-based scheduling system
 
 ## Quick Start Guide
 
@@ -304,11 +308,32 @@ docker-compose logs -f app
 # Access database via phpMyAdmin
 # Navigate to http://localhost:8080
 
-# Run monitoring manually
+# Run monitoring manually with debug output
 docker-compose exec app php monitor.php --debug
 
 # Check application status
 docker-compose ps
+```
+
+### Development and Debugging
+
+**Xdebug Support:**
+```bash
+# Xdebug is pre-configured and ready to use
+# Set breakpoints in VS Code and use "Listen for Xdebug" configuration
+# The .vscode/launch.json file provides debugging configurations
+```
+
+**Monitoring System:**
+```bash
+# The intelligent monitoring system respects individual site intervals:
+# - check_interval: minutes between uptime checks
+# - ssl_check_interval: seconds between SSL checks
+# - Only runs checks when intervals have elapsed
+
+# Example debug output:
+# [2025-08-04 17:26:52] Uptime check not due: 1 minutes since last check (interval: 5 min)
+# [2025-08-04 17:26:52] SSL check not due: 0 hours since last check (interval: 24 hours)
 ```
 
 ### Common Development Tasks
@@ -429,7 +454,12 @@ If you're upgrading from a basic monitoring setup:
 - Advanced user management with safety protections
 - Responsive UI with Bootstrap 5 and Font Awesome
 - Security hardening and session management
-- Visual statistics dashboard
+- Visual statistics dashboard with enhanced metrics
+- **Intelligent monitoring system with configurable intervals**
+- **Enhanced site details with separated uptime and SSL monitoring views**
+- **Xdebug support for development and debugging**
+- **VS Code integration with launch configurations**
+- **Improved dashboard UI with statistics cards and visual indicators**
 
 ### Planned Enhancements 🚧
 - Email/SMS notifications for downtime alerts

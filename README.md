@@ -4,18 +4,32 @@ A comprehensive PHP-based application to monitor website uptime and SSL certific
 
 ## Features
 
-- **🔐 User Authentication System**: Secure login/logout with role-based access control (Admin/User roles)
+- **🔐 User Authentication System**: Secure login/logout wiThis project is open source and available under the [MIT License](LICENSE) **with an additional credit retention clause**:
+
+> **Attribution Required:**
+> You must retain visible credit to the original author ("Powered by Defineway Technologies Private Limited") in the user interface and documentation of any derivative works or public deployments.
+
+**Author:** Sushovan Mukherjee  
+**Company:** Defineway Technologies Private Limited  
+**Website:** [https://defineway.com](https://defineway.com)  
+**Contact:** sushovan@defineway.com  
+
+Copyright © 2025 Sushovan Mukherjee, Defineway Technologies Private Limited
+
+All source code files include comprehensive license headers with author and company attribution.e-based access control (Admin/User roles)
 - **👥 User Management**: Complete CRUD operations for user accounts with safety protections
-- **📊 Uptime Monitoring**: Check website availability and response times
-- **🔒 SSL Certificate Monitoring**: Monitor SSL certificate expiration dates with warnings
+- **📊 Uptime Monitoring**: Check website availability and response times with intelligent interval management
+- **🔒 SSL Certificate Monitoring**: Monitor SSL certificate expiration dates with warnings and configurable intervals
 - **🎨 Modern Web Interface**: Beautiful, responsive dashboard with Bootstrap 5 and Font Awesome icons
-- **📈 Statistics Dashboard**: Visual cards showing user counts and system metrics
-- **⚙️ Site Management**: Full CRUD operations for monitored websites
-- **🔧 Configurable Intervals**: Custom monitoring intervals for each site
+- **📈 Statistics Dashboard**: Visual cards showing uptime percentage, response times, and SSL monitoring status
+- **⚙️ Site Management**: Full CRUD operations for monitored websites with enhanced UI
+- **🔧 Configurable Intervals**: Custom monitoring intervals for each site (uptime and SSL separately)
 - **🐳 Docker Support**: Complete containerization with phpMyAdmin for database management
-- **⏰ Automated Monitoring**: Cron job integration for scheduled checks
+- **⏰ Intelligent Monitoring**: Cron job with interval-aware scheduling - respects individual site settings
 - **🛡️ Security Features**: Password hashing, session management, CSRF protection
 - **📱 Responsive Design**: Mobile-friendly interface with modern UI components
+- **🐛 Development Tools**: Xdebug support for debugging and VS Code integration
+- **📊 Enhanced UI**: Improved dashboard with statistics cards and visual status indicators
 
 ## Technology Stack
 
@@ -27,6 +41,8 @@ A comprehensive PHP-based application to monitor website uptime and SSL certific
 - **Database Management**: phpMyAdmin (http://localhost:8080)
 - **Testing**: PHPUnit
 - **Authentication**: Custom session-based auth system
+- **Development**: Xdebug support with VS Code integration
+- **Monitoring**: Intelligent interval-based cron scheduling
 
 ## Quick Start
 
@@ -95,25 +111,26 @@ A comprehensive PHP-based application to monitor website uptime and SSL certific
 ### Adding Sites
 
 1. Log in to the dashboard
-2. Navigate to "Sites" section
-3. Click "Add New Site"
-4. Fill in the site details:
+2. Navigate to "Sites" section or click "Add New Site"
+3. Fill in the site details:
    - **Site Name**: A friendly name for identification
    - **URL**: The full URL to monitor (http:// or https://)
-   - **Check Interval**: How often to check uptime (in seconds)
+   - **Check Interval**: How often to check uptime (in minutes)
    - **SSL Monitoring**: Enable/disable SSL certificate checking
-   - **SSL Check Interval**: How often to check SSL certificates
+   - **SSL Check Interval**: How often to check SSL certificates (in seconds, default 24 hours)
 
 ### Dashboard Features
 
-- **Statistics Cards**: Overview of total users, active users, and administrators
-- **Site Status Overview**: Real-time monitoring status for all sites
-- **User Management**: Complete user administration interface
+- **Statistics Cards**: Overview of total sites, uptime percentage, average response times, and SSL monitoring count
+- **Site Status Overview**: Real-time monitoring status for all sites with enhanced visual indicators
+- **User Management**: Complete user administration interface (admin only)
 - **Responsive Navigation**: Modern sidebar navigation with active page highlighting
+- **Enhanced Site Details**: Separate views for uptime and SSL monitoring history
 - **Status Indicators**: 
   - 🟢 **Up**: Site is accessible and responding normally
   - 🟡 **Warning**: Site has issues (4xx errors, SSL expiring soon)
   - 🔴 **Down**: Site is inaccessible or has critical errors
+- **Smart Monitoring**: Only checks sites when their configured intervals have elapsed
 
 ### Manual Monitoring
 
@@ -209,10 +226,27 @@ This helps keep your repository clean and focused on source code and documentati
 
 ### Cron Schedule
 
-The monitoring script runs every 5 minutes by default. To change this, modify the cron job in the Dockerfile:
+The monitoring script runs every minute by default but intelligently manages check intervals. To change the cron frequency, modify the cron job in the Dockerfile:
 
 ```dockerfile
 RUN echo "* * * * * cd /var/www && /usr/local/bin/php monitor.php >> /var/www/logs/monitor.log 2>&1" | crontab -
+```
+
+**How Intelligent Monitoring Works:**
+- Each site has its own `check_interval` (in minutes) and `ssl_check_interval` (in seconds)
+- The monitor script runs every minute but only checks sites when their intervals have elapsed
+- Debug mode shows interval calculations: `docker-compose exec app php monitor.php --debug`
+
+## Development
+
+### Xdebug Support
+
+The project includes Xdebug for debugging:
+
+```bash
+# Xdebug is automatically installed and configured
+# VS Code launch configuration is provided in .vscode/launch.json
+# Set breakpoints and use "Listen for Xdebug" in VS Code
 ```
 
 ## Troubleshooting
@@ -247,7 +281,13 @@ docker-compose exec app chmod -R 755 /var/www/storage /var/www/logs
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+
+This project is open source and available under the [MIT License](LICENSE) **with an additional credit retention clause**:
+
+> **Attribution Required:**
+> You must retain visible credit to the original author ("Powered by Defineway Technologies Private Limited") in the user interface and documentation of any derivative works or public deployments.
+
+Copyright © 2025 Defineway Technologies Private Limited (<https://defineway.com>)
 
 ## Support
 
@@ -266,6 +306,11 @@ For issues and questions:
 - [x] Security hardening (password hashing, session management)
 - [x] Statistics dashboard with visual metrics
 - [x] Responsive design improvements
+- [x] **Intelligent interval-based monitoring system**
+- [x] **Enhanced site details with separate uptime and SSL views**
+- [x] **Xdebug development support**
+- [x] **VS Code debugging configuration**
+- [x] **Improved dashboard with statistics cards**
 
 ### 🚧 Planned Features
 - [ ] Email/SMS notifications for downtime alerts

@@ -1,32 +1,35 @@
 ## Big Picture & Data Flow
  - **Goal:** Monitor website uptime and SSL certificate status, with results shown in a modern PHP web UI.
  - **Architecture:** Clean MVC in `src/` — Controllers handle HTTP requests, call Services for business logic, which use Models for DB access. Views render Bootstrap-based HTML.
- - **Monitoring:** `monitor.php` (CLI/cron) runs checks using Services, stores results in DB. Results are displayed in the dashboard and site details views.
+ - **Monitoring:** `monitor.php` (CLI/cron) runs intelligent interval-based checks using Services, stores results in DB. Results are displayed in enhanced dashboard and site details views with visual indicators.
  - **Routing:** Custom router (`src/Controllers/Router.php`) maps `?action=` URLs to controller methods. Entry point is `public/index.php`.
 
 ## Data & Component Interactions
  - **Controllers** receive HTTP requests, validate input, and call **Services** for business logic.
- - **Services** (e.g., `UptimeMonitor`, `SSLMonitor`) encapsulate monitoring/auth logic and interact with **Models** for DB operations.
- - **Models** handle all DB access (see `src/Models/`). Use singleton Database class (`src/Config/Database.php`) with PDO.
- - **Views** (in `src/Views/`) are PHP templates, rendered with data from controllers. Always escape output with `htmlspecialchars()`.
- - **Monitoring results** are written to the DB and surfaced in the dashboard and site details.
+ - **Services** (e.g., `UptimeMonitor`, `SSLMonitor`, `MonitoringResultService`) encapsulate monitoring/auth logic and interact with **Models** for DB operations.
+ - **Models** handle all DB access (see `src/Models/`). Use singleton Database class (`src/Config/Database.php`) with PDO. Models now return proper object instances instead of arrays.
+ - **Views** (in `src/Views/`) are PHP templates with enhanced Bootstrap 5 UI, rendered with data from controllers. Always escape output with `htmlspecialchars()`.
+ - **Monitoring results** are written to the DB with intelligent interval checking and surfaced in the enhanced dashboard and site details views with visual status indicators.
  - **Security:** All views include `security.php` to prevent direct access via `APP_RUNNING` constant.
 
 ## Key Workflows
 - **Local Development:**
   - Use Docker Compose: `docker-compose up -d --build`
   - Access app at `http://localhost`, phpMyAdmin at `http://localhost:8080`
+  - **Debugging:** Xdebug configured for VS Code remote debugging on port 9003
 - **Testing:**
   - Run tests: `docker-compose exec app vendor/bin/phpunit`
 - **Manual Monitoring:**
   - Run: `docker-compose exec app php monitor.php [--debug]`
+  - **Intelligent Monitoring:** Respects per-site interval settings to avoid unnecessary checks
 - **Logs:**
   - App logs: `logs/monitor.log`
   - View: `docker-compose exec app tail -f logs/monitor.log`
 
 ## Monitoring Workflow
  - `monitor.php` is run by cron (see Dockerfile) or manually. It uses Services to check all sites, logs results to DB and `logs/monitor.log`.
- - Monitoring results are displayed in the dashboard and per-site views.
+ - **Intelligent Monitoring:** Only checks sites when their configured interval has elapsed since last check.
+ - Monitoring results are displayed in the enhanced dashboard and per-site views with visual status indicators.
 
 ## Project Conventions
 - **Authentication:** Custom session-based, with Admin/User roles. Admins manage users/sites; users have limited access.
@@ -36,9 +39,11 @@
   - Prevent self-deletion and last-admin removal
 - **Site Monitoring:**
   - Sites have configurable check intervals and SSL monitoring
-  - Monitoring results stored in DB, shown in dashboard and site details
+  - **Intelligent Interval Checking:** Monitor respects per-site intervals to optimize performance
+  - Monitoring results stored in DB, shown in enhanced dashboard and site details with visual indicators
 - **UI:**
-  - Bootstrap 5 and Font Awesome for styling
+  - Enhanced Bootstrap 5 and Font Awesome 6.4.0 for modern styling
+  - Statistics cards, visual status indicators, and improved responsive design
   - Use `Views/partials/` for shared UI (header, navigation)
 - **Database:**
   - Schema in `config/database/schema.sql`
