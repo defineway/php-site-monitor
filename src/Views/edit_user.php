@@ -29,17 +29,17 @@ $currentPage = 'users';
                             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
                         <?php endif; ?>
                         
-                        <?php if (isset($user)): ?>
+                        <?php if (isset($user) && is_object($user)): ?>
                             <form method="POST">
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username</label>
                                     <input type="text" class="form-control" id="username" name="username" 
-                                           value="<?= htmlspecialchars($user['username'] ?? '') ?>">
+                                           value="<?= htmlspecialchars($user->getUsername() ?? '') ?>">
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email"
-                                           value="<?= htmlspecialchars($user['email'] ?? '') ?>">
+                                           value="<?= htmlspecialchars($user->getEmail() ?? '') ?>">
                                 </div>
                                 <div class="mb-3">
                                     <label for="password" class="form-label">New Password (leave blank to keep current)</label>
@@ -48,15 +48,15 @@ $currentPage = 'users';
                                 <div class="mb-3">
                                     <label for="role" class="form-label">Role</label>
                                     <select class="form-control" id="role" name="role">
-                                        <option value="user" <?= ($user['role'] ?? '') === 'user' ? 'selected' : '' ?>>User</option>
-                                        <option value="admin" <?= ($user['role'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                        <option value="user" <?= ($user->getRole() ?? '') === 'user' ? 'selected' : '' ?>>User</option>
+                                        <option value="admin" <?= ($user->getRole() ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Status</label>
                                     <select class="form-control" id="status" name="status">
-                                        <option value="active" <?= ($user['status'] ?? '') === 'active' ? 'selected' : '' ?>>Active</option>
-                                        <option value="inactive" <?= ($user['status'] ?? '') === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                                        <option value="active" <?= $user->isActive() ? 'selected' : '' ?>>Active</option>
+                                        <option value="inactive" <?= !$user->isActive() ? 'selected' : '' ?>>Inactive</option>
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Update User</button>

@@ -58,62 +58,58 @@ $currentPage = 'dashboard';
                         No sites are currently being monitored. <a href="?action=add_site">Add your first site</a>.
                     </div>
                 <?php else: ?>
-                    <div class="row">
-                        <?php foreach ($sites as $site): 
-                            $latest = $latestResults[$site['id']] ?? null;
-                            $statusClass = $latest ? 'status-' . $latest['status'] : 'text-muted';
-                            $statusIcon = '';
-                            switch ($latest['status'] ?? 'unknown') {
-                                case 'up': $statusIcon = 'fas fa-check-circle'; break;
-                                case 'down': $statusIcon = 'fas fa-times-circle'; break;
-                                case 'warning': $statusIcon = 'fas fa-exclamation-triangle'; break;
-                                default: $statusIcon = 'fas fa-question-circle';
-                            }
-                        ?>
-                            <div class="col-md-4 col-lg-3 mb-4">
-                                <div class="card site-card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><?= htmlspecialchars($site['name']) ?></h5>
-                                        <p class="card-text">
-                                            <small class="text-muted"><?= htmlspecialchars($site['url']) ?></small>
-                                        </p>
-                                        <p class="card-text">
-                                            <strong>Status:</strong> 
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>URL</th>
+                                    <th>Status</th>
+                                    <th>Response Time</th>
+                                    <th>Last Checked</th>
+                                    <th>Actions</th>
+                                    <?php if ($currentUser->isAdmin()): ?>
+                                        <th>Owner</th>
+                                    <?php endif; ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($sites as $site): 
+                                    $latest = $latestResults[$site['id']] ?? null;
+                                    $statusClass = $latest ? 'status-' . $latest['status'] : 'text-muted';
+                                    $statusIcon = '';
+                                    switch ($latest['status'] ?? 'unknown') {
+                                        case 'up': $statusIcon = 'fas fa-check-circle text-success'; break;
+                                        case 'down': $statusIcon = 'fas fa-times-circle text-danger'; break;
+                                        case 'warning': $statusIcon = 'fas fa-exclamation-triangle text-warning'; break;
+                                        default: $statusIcon = 'fas fa-question-circle text-muted';
+                                    }
+                                ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($site['name']) ?></td>
+                                        <td><a href="<?= htmlspecialchars($site['url']) ?>" target="_blank"><?= htmlspecialchars($site['url']) ?></a></td>
+                                        <td>
                                             <span class="<?= $statusClass ?>">
                                                 <i class="<?= $statusIcon ?>"></i>
                                                 <?= $latest ? ucfirst($latest['status']) : 'Unknown' ?>
                                             </span>
-                                        </p>
-                                        <?php if ($latest && $latest['response_time']): ?>
-                                            <p class="card-text">
-                                                <strong>Response:</strong> <?= $latest['response_time'] ?>ms
-                                            </p>
+                                        </td>
+                                        <td><?= $latest ? $latest['response_time'] . 'ms' : 'N/A' ?></td>
+                                        <td><?= $latest ? date('M j, H:i', strtotime($latest['checked_at'])) : 'Never' ?></td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="?action=site_details&id=<?= $site['id'] ?>" class="btn btn-sm btn-info">Details</a>
+                                                <a href="?action=edit_site&id=<?= $site['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
+                                                <a href="?action=delete_site&id=<?= $site['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this site?')">Delete</a>
+                                            </div>
+                                        </td>
+                                        <?php if ($currentUser->isAdmin()): ?>
+                                            <td><?= htmlspecialchars($site['username'] ?? 'N/A') ?></td>
                                         <?php endif; ?>
-                                        <?php if ($latest && $latest['checked_at']): ?>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    Last checked: <?= date('M j, H:i', strtotime($latest['checked_at'])) ?>
-                                                </small>
-                                            </p>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="card-footer bg-transparent">
-                                        <div class="btn-group w-100" role="group">
-                                            <a href="?action=site_details&id=<?= $site['id'] ?>" class="btn btn-outline-info btn-sm">
-                                                <i class="fas fa-chart-line"></i> Details
-                                            </a>
-                                            <a href="?action=edit_site&id=<?= $site['id'] ?>" class="btn btn-outline-primary btn-sm">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <a href="?action=delete_site&id=<?= $site['id'] ?>" class="btn btn-outline-danger btn-sm" 
-                                               onclick="return confirm('Are you sure you want to delete this site?')">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
                 <?php endif; ?>
             </div>

@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Services\AuthService;
+use App\Models\User;
 
 abstract class BaseController {
     protected $authService;
@@ -9,12 +10,23 @@ abstract class BaseController {
     
     public function __construct() {
         $this->authService = new AuthService();
+        $this->loadCurrentUser();
+    }
+
+    private function loadCurrentUser(): void {
+        $user = $this->authService->getCurrentUser();
+        if (is_object($user)) {
+            $this->currentUser = $user;
+        }
     }
     
     /**
      * Render a view with data
      */
     protected function render(string $view, array $data = []): void {
+        // Add currentUser to all views
+        $data['currentUser'] = $this->currentUser;
+
         // Validate view name to prevent directory traversal
         if (preg_match('/[^a-zA-Z0-9_\-]/', $view)) {
             throw new \Exception("Invalid view name: {$view}");
@@ -62,24 +74,26 @@ abstract class BaseController {
     /**
      * Require authentication
      */
-    protected function requireAuth(): array {
-        $this->currentUser = $this->authService->requireAuth();
-        return $this->currentUser;
+    protected function requireAuth(): void {
+        if (!$this->authService->isLoggedIn()) {
+            $this->redirectWithError('index.php?action=login', 'auth_required');
+        }
     }
     
     /**
      * Require admin access
      */
-    protected function requireAdmin(): array {
-        $this->currentUser = $this->authService->requireAdmin();
-        return $this->currentUser;
+    protected function requireAdmin(): void {
+        $this->requireAuth();
+        if (!$this->currentUser || !$this->currentUser->isAdmin()) {
+            $this->redirectWithError('index.php', 'admin_required');
+        }
     }
     
     /**
      * Get current user (if logged in)
      */
-    protected function getCurrentUser(): ?array {
-        $this->currentUser = $this->authService->getCurrentUser();
+    protected function getCurrentUser(): ?User {
         return $this->currentUser;
     }
     

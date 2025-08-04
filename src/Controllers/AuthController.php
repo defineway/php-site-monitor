@@ -91,7 +91,7 @@ class AuthController extends BaseController {
                 $error = 'Current and new password required.';
             } else {
                 $result = $this->authService->changePassword(
-                    $this->currentUser['id'], 
+                    $this->currentUser->getId(), 
                     $_POST['current_password'], 
                     $_POST['new_password']
                 );

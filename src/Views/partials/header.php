@@ -27,7 +27,7 @@
                         <i class="fas fa-plus"></i> Add Site
                     </a>
                 </li>
-                <?php if (isset($currentUser) && $currentUser['role'] === 'admin'): ?>
+                <?php if (isset($currentUser) && is_object($currentUser) && $currentUser->getRole() === 'admin'): ?>
                 <li class="nav-item">
                     <a class="nav-link <?= ($currentPage ?? '') === 'users' ? 'active' : '' ?>" href="?action=users">
                         <i class="fas fa-users"></i> Users
@@ -39,7 +39,7 @@
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user"></i> <?= htmlspecialchars($currentUser['username'] ?? 'User') ?>
+                        <i class="fas fa-user"></i> <?= htmlspecialchars((is_object($currentUser) && $currentUser->getUsername()) ? $currentUser->getUsername() : 'User') ?>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="?action=profile">

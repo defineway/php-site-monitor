@@ -36,11 +36,11 @@ $currentPage = 'profile';
                     </div>
                     <div class="card-body">
                         <?php if (isset($user)): ?>
-                            <p><strong>Username:</strong> <?= htmlspecialchars($user['username']) ?></p>
-                            <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
-                            <p><strong>Role:</strong> <?= htmlspecialchars($user['role']) ?></p>
-                            <p><strong>Status:</strong> <?= htmlspecialchars($user['status']) ?></p>
-                            <p><strong>Created:</strong> <?= htmlspecialchars($user['created_at']) ?></p>
+                            <p><strong>Username:</strong> <?= htmlspecialchars($user->getUsername()) ?></p>
+                            <p><strong>Email:</strong> <?= htmlspecialchars($user->getEmail()) ?></p>
+                            <p><strong>Role:</strong> <?= htmlspecialchars($user->getRole()) ?></p>
+                            <p><strong>Status:</strong> <?= htmlspecialchars($user->isActive() ? 'Active' : 'Inactive') ?></p>
+                            <p><strong>Created:</strong> <?= htmlspecialchars($user->getCreatedAt()) ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -55,7 +55,7 @@ $currentPage = 'profile';
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <input type="email" class="form-control" id="email" name="email" 
-                                       value="<?= htmlspecialchars($user['email'] ?? '') ?>">
+                                       value="<?= htmlspecialchars($user->getEmail() ?? '') ?>">
                             </div>
                             <button type="submit" class="btn btn-primary">Update Profile</button>
                         </form>

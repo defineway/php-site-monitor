@@ -5,11 +5,65 @@ use App\Config\Database;
 
 class User {
     private $db;
-    
-    public function __construct() {
+    private $id;
+    private $username;
+    private $email;
+    private $role;
+    private $is_active;
+    private $created_at;
+    private $updated_at;
+    private $password_hash;
+
+    public function __construct($userData = null) {
         $this->db = Database::getInstance()->getConnection();
+        if ($userData) {
+            $this->id = $userData['id'];
+            $this->username = $userData['username'];
+            $this->email = $userData['email'];
+            $this->role = $userData['role'];
+            $this->is_active = $userData['is_active'];
+            $this->created_at = $userData['created_at'] ?? null;
+            $this->updated_at = $userData['updated_at'] ?? null;
+            $this->password_hash = $userData['password_hash'] ?? null;
+        }
     }
-    
+
+    public function getId(): ?int {
+        return $this->id;
+    }
+
+    public function getUsername(): ?string {
+        return $this->username;
+    }
+
+    public function getEmail(): ?string {
+        return $this->email;
+    }
+
+    public function getRole(): ?string {
+        return $this->role;
+    }
+
+    public function isActive(): bool {
+        return (bool)$this->is_active;
+    }
+
+    public function isAdmin(): bool {
+        return $this->role === 'admin';
+    }
+
+    public function getCreatedAt(): ?string {
+        return $this->created_at;
+    }
+
+    public function getUpdatedAt(): ?string {
+        return $this->updated_at;
+    }
+
+    public function getPasswordHash(): ?string {
+        return $this->password_hash;
+    }
+
     public function create(array $data): int {
         $sql = "INSERT INTO users (username, email, password_hash, role) 
                 VALUES (:username, :email, :password_hash, :role)";
@@ -29,44 +83,32 @@ class User {
         $sql = "SELECT * FROM users WHERE username = :username AND is_active = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['username' => $username]);
-        
         $result = $stmt->fetch();
-        if ($result) {
-            // Convert is_active to status for backwards compatibility
-            $result['status'] = $result['is_active'] ? 'active' : 'inactive';
-        }
-        return $result ?: null;
+        return $result ? new self($result) : null;
     }
     
-    public function findByEmail(string $email): ?array {
+    public function findByEmail(string $email): ?User {
         $sql = "SELECT * FROM users WHERE email = :email AND is_active = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['email' => $email]);
-        
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? new self($result) : null;
     }
     
-    public function findById(int $id): ?array {
+    public function findById(int $id): ?User {
         $sql = "SELECT * FROM users WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $id]);
-        
         $result = $stmt->fetch();
-        if ($result) {
-            // Convert is_active to status for backwards compatibility
-            $result['status'] = $result['is_active'] ? 'active' : 'inactive';
-        }
-        return $result ?: null;
+        return $result ? new self($result) : null;
     }
     
-    public function findByIdActive(int $id): ?array {
+    public function findByIdActive(int $id): ?User {
         $sql = "SELECT * FROM users WHERE id = :id AND is_active = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['id' => $id]);
-        
         $result = $stmt->fetch();
-        return $result ?: null;
+        return $result ? new self($result) : null;
     }
     
     public function verifyPassword(string $password, string $hash): bool {
@@ -82,20 +124,23 @@ class User {
     public function findAll(): array {
         $sql = "SELECT id, username, email, role, is_active, created_at, updated_at FROM users ORDER BY username";
         $stmt = $this->db->query($sql);
-        $users = $stmt->fetchAll();
-        
-        // Convert is_active to status for backwards compatibility
-        foreach ($users as &$user) {
-            $user['status'] = $user['is_active'] ? 'active' : 'inactive';
+        $rows = $stmt->fetchAll();
+        $users = [];
+        foreach ($rows as $row) {
+            $users[] = new self($row);
         }
-        
         return $users;
     }
     
     public function findAllActive(): array {
         $sql = "SELECT id, username, email, role, is_active, created_at, updated_at FROM users WHERE is_active = 1 ORDER BY username";
         $stmt = $this->db->query($sql);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        $users = [];
+        foreach ($rows as $row) {
+            $users[] = new self($row);
+        }
+        return $users;
     }
     
     public function update(int $id, array $data): bool {
@@ -183,6 +228,11 @@ class User {
                 FROM users WHERE role = :role ORDER BY username";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['role' => $role]);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        $users = [];
+        foreach ($rows as $row) {
+            $users[] = new self($row);
+        }
+        return $users;
     }
 }

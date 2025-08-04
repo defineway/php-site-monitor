@@ -13,10 +13,10 @@ class UserController extends BaseController {
         $this->requireAuth();
         
         $userModel = new User();
-        $user = $userModel->findById($this->currentUser['id']);
-        
+        $user = $userModel->findById($this->currentUser->getId());
+
         $error = null;
-        if (!$user) {
+        if (!$user || !is_object($user)) {
             $error = 'User not found.';
         }
         
@@ -31,7 +31,7 @@ class UserController extends BaseController {
             
             if (!empty($updateData)) {
                 try {
-                    $userModel->update($this->currentUser['id'], $updateData);
+                    $userModel->update($this->currentUser->getId(), $updateData);
                     $this->redirectWithSuccess('index.php?action=profile', 'profile_updated');
                 } catch (Exception $e) {
                     $error = 'Failed to update profile: ' . $e->getMessage();
@@ -41,7 +41,7 @@ class UserController extends BaseController {
         
         $this->render('profile', [
             'currentUser' => $this->currentUser,
-            'user' => $user ?? null,
+            'user' => $user,
             'error' => $error
         ]);
     }
@@ -155,7 +155,7 @@ class UserController extends BaseController {
         $userId = (int)($_GET['id'] ?? 0);
         $hardDelete = isset($_GET['hard']) && $_GET['hard'] === 'true';
         
-        if ($userId === $this->currentUser['id']) {
+        if ($userId === $this->currentUser->getId()) {
             $this->redirectWithError('index.php?action=users', 'cannot_delete_self');
         }
         
@@ -182,7 +182,7 @@ class UserController extends BaseController {
         
         $userId = (int)($_GET['id'] ?? 0);
         
-        if ($userId === $this->currentUser['id']) {
+        if ($userId === $this->currentUser->getId()) {
             $this->redirectWithError('index.php?action=users', 'cannot_modify_self');
         }
         
@@ -203,7 +203,7 @@ class UserController extends BaseController {
         
         $userId = (int)($_GET['id'] ?? 0);
         
-        if ($userId === $this->currentUser['id']) {
+        if ($userId === $this->currentUser->getId()) {
             $this->redirectWithError('index.php?action=users', 'cannot_modify_self');
         }
         

@@ -21,7 +21,7 @@ class DashboardController extends BaseController {
             $siteModel = new Site();
             $resultModel = new MonitoringResult();
             
-            $sites = $siteModel->findAll();
+            $sites = $siteModel->findAll($this->currentUser);
             
             foreach ($sites as $site) {
                 $latestResults[$site['id']] = $resultModel->getLatestStatus($site['id']);

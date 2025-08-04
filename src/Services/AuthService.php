@@ -21,7 +21,7 @@ class AuthService {
         if (!$user) {
             return ['success' => false, 'message' => 'User not found'];
         }
-        if (!$this->userModel->verifyPassword($currentPassword, $user['password_hash'])) {
+        if (!$this->userModel->verifyPassword($currentPassword, $user->getPasswordHash())) {
             return ['success' => false, 'message' => 'Current password is incorrect'];
         }
         if (strlen($newPassword) < 8) {
@@ -38,17 +38,20 @@ class AuthService {
     public function login(string $username, string $password): array {
         $user = $this->userModel->findByUsername($username);
         
-        if (!$user) {
+        if (!is_object($user)) {
+            error_log("Login attempt failed: User not found for username - {$username}");
             return ['success' => false, 'message' => 'Invalid username or password'];
         }
-        
-        if (!$this->userModel->verifyPassword($password, $user['password_hash'])) {
+
+        $verificationResult = $this->userModel->verifyPassword($password, $user->getPasswordHash());
+
+        if (!$verificationResult) {
             return ['success' => false, 'message' => 'Invalid username or password'];
         }
         
         // Create session
         $sessionId = $this->sessionModel->create(
-            $user['id'],
+            $user->getId(),
             $_SERVER['REMOTE_ADDR'] ?? 'unknown',
             $_SERVER['HTTP_USER_AGENT'] ?? 'unknown'
         );
@@ -58,23 +61,23 @@ class AuthService {
         
         // Also set PHP session for compatibility
         $_SESSION['user'] = [
-            'id' => $user['id'],
-            'username' => $user['username'],
-            'email' => $user['email'],
-            'role' => $user['role']
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
+            'email' => $user->getEmail(),
+            'role' => $user->getRole()
         ];
         
         // Update last login
-        $this->userModel->updateLastLogin($user['id']);
+        $this->userModel->updateLastLogin($user->getId());
         
         return [
             'success' => true,
             'message' => 'Login successful',
             'user' => [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'role' => $user['role']
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                'role' => $user->getRole()
             ]
         ];
     }
@@ -102,7 +105,7 @@ class AuthService {
         return true;
     }
     
-    public function getCurrentUser(): ?array {
+    public function getCurrentUser(): ?User {
         $sessionId = $_COOKIE['session_id'] ?? null;
         
         if (!$sessionId) {
@@ -120,22 +123,23 @@ class AuthService {
         // Extend session
         $this->sessionModel->extend($sessionId);
         
-        return [
+        return new User( [
             'id' => $session['user_id'],
             'username' => $session['username'],
             'email' => $session['email'],
-            'role' => $session['role']
-        ];
+            'role' => $session['role'],
+            'is_active' => $session['is_active'] ?? true
+        ] );
     }
     
     public function isLoggedIn(): bool {
         return $this->getCurrentUser() !== null;
     }
     
-    public function requireAuth(): ?array {
+    public function requireAuth(): ?User {
         $user = $this->getCurrentUser();
         
-        if (!$user) {
+        if (!$user || !$user->isActive()) {
             header('Location: ?action=login');
             exit;
         }
@@ -143,10 +147,10 @@ class AuthService {
         return $user;
     }
     
-    public function requireAdmin(): ?array {
+    public function requireAdmin(): ?User {
         $user = $this->requireAuth();
         
-        if ($user['role'] !== 'admin') {
+        if ($user->getRole() !== 'admin') {
             header('Location: ?action=dashboard&error=access_denied');
             exit;
         }
