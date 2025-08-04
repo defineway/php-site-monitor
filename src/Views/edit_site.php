@@ -53,13 +53,13 @@ $currentPage = 'edit_site';
             <div class="mb-3">
                 <label for="ssl_check_interval" class="form-label">SSL Check Frequency</label>
                 <select class="form-select" id="ssl_check_interval" name="ssl_check_interval">
-                    <option value="900" <?= ($site['ssl_check_interval'] ?? 86400) == 900 ? 'selected' : '' ?>>Every 15 Minutes</option>
-                    <option value="1800" <?= ($site['ssl_check_interval'] ?? 86400) == 1800 ? 'selected' : '' ?>>Every 30 Minutes</option>
-                    <option value="3600" <?= ($site['ssl_check_interval'] ?? 86400) == 3600 ? 'selected' : '' ?>>Every Hour</option>
-                    <option value="43200" <?= ($site['ssl_check_interval'] ?? 86400) == 43200 ? 'selected' : '' ?>>Every 12 Hours</option>
-                    <option value="86400" <?= ($site['ssl_check_interval'] ?? 86400) == 86400 ? 'selected' : '' ?>>Every Day</option>
-                    <option value="604800" <?= ($site['ssl_check_interval'] ?? 86400) == 604800 ? 'selected' : '' ?>>Every Week</option>
-                    <option value="2592000" <?= ($site['ssl_check_interval'] ?? 86400) == 2592000 ? 'selected' : '' ?>>Every Month</option>
+                    <option value="900" <?= ($site->getSslCheckInterval() ?? 86400) == 900 ? 'selected' : '' ?>>Every 15 Minutes</option>
+                    <option value="1800" <?= ($site->getSslCheckInterval() ?? 86400) == 1800 ? 'selected' : '' ?>>Every 30 Minutes</option>
+                    <option value="3600" <?= ($site->getSslCheckInterval() ?? 86400) == 3600 ? 'selected' : '' ?>>Every Hour</option>
+                    <option value="43200" <?= ($site->getSslCheckInterval() ?? 86400) == 43200 ? 'selected' : '' ?>>Every 12 Hours</option>
+                    <option value="86400" <?= ($site->getSslCheckInterval() ?? 86400) == 86400 ? 'selected' : '' ?>>Every Day</option>
+                    <option value="604800" <?= ($site->getSslCheckInterval() ?? 86400) == 604800 ? 'selected' : '' ?>>Every Week</option>
+                    <option value="2592000" <?= ($site->getSslCheckInterval() ?? 86400) == 2592000 ? 'selected' : '' ?>>Every Month</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Update Site</button>
