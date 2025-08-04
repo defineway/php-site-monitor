@@ -77,4 +77,25 @@ class MonitoringResultService {
         $rows = $stmt->fetchAll();
         return array_map(fn($row) => new MonitoringResult($row), $rows);
     }
+    
+    /**
+     * Get the last check time for a specific site and check type
+     * @param int $siteId Site ID to get the last check time for
+     * @param string $checkType Check type ('uptime' or 'ssl')
+     * @return string|null Last check time or null if not found
+     */
+    public function getLastCheckTime(int $siteId, string $checkType): ?string {
+        $sql = "SELECT checked_at FROM monitoring_results 
+                WHERE site_id = :site_id AND check_type = :check_type 
+                ORDER BY checked_at DESC LIMIT 1";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'site_id' => $siteId,
+            'check_type' => $checkType
+        ]);
+
+        $result = $stmt->fetch();
+        return $result ? $result['checked_at'] : null;
+    }
 }
