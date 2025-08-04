@@ -18,7 +18,7 @@ class SSLMonitor {
         // Skip SSL check for HTTP URLs
         if (isset($parsedUrl['scheme']) && $parsedUrl['scheme'] === 'http') {
             return [
-                'status' => 'up',
+                'status' => 'N/A',
                 'ssl_expiry_date' => null,
                 'error_message' => 'HTTP URL - SSL not applicable',
             ];
