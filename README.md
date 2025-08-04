@@ -4,8 +4,9 @@ A comprehensive PHP-based application to monitor website uptime and SSL certific
 
 ## Features
 
-- **🔐 User Authentication System**: Secure login/logout wiThis project is open source and available under the [MIT License](LICENSE) **with an additional credit retention clause**:
+- **🔐 User Authentication System**: Secure login/logout with role-based access control (Admin/User roles)
 
+This project is open source and available under the [MIT License](LICENSE) **with an additional credit retention clause**:
 > **Attribution Required:**
 > You must retain visible credit to the original author ("Powered by Defineway Technologies Private Limited") in the user interface and documentation of any derivative works or public deployments.
 
