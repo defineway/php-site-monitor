@@ -31,16 +31,16 @@ $currentPage = 'site_details';
         <?php if (isset($site)): ?>
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5><?= htmlspecialchars($site['name'] ?? 'N/A') ?></h5>
+                    <h5><?= htmlspecialchars($site->getName() ?? 'N/A') ?></h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site['url'] ?? '#') ?>" target="_blank"><?= htmlspecialchars($site['url'] ?? 'N/A') ?></a></p>
-                    <p><strong>Check Interval:</strong> Every <?= htmlspecialchars($site['check_interval'] ?? 'N/A') ?> minutes</p>
-                    <p><strong>SSL Check Enabled:</strong> <?= ($site['ssl_check_enabled'] ?? 0) ? 'Yes' : 'No' ?></p>
-                    <?php if ($site['ssl_check_enabled']): ?>
-                        <p><strong>SSL Check Frequency:</strong> Every <?= format_interval($site['ssl_check_interval'] ?? 86400) ?></p>
+                    <p><strong>URL:</strong> <a href="<?= htmlspecialchars($site->getUrl() ?? '#') ?>" target="_blank"><?= htmlspecialchars($site->getUrl() ?? 'N/A') ?></a></p>
+                    <p><strong>Check Interval:</strong> Every <?= htmlspecialchars($site->getCheckInterval() ?? 'N/A') ?> minutes</p>
+                    <p><strong>SSL Check Enabled:</strong> <?= ($site->isSslCheckEnabled() ?? 0) ? 'Yes' : 'No' ?></p>
+                    <?php if ($site->isSslCheckEnabled()): ?>
+                        <p><strong>SSL Check Frequency:</strong> Every <?= format_interval($site->getSslCheckInterval() ?? 86400) ?></p>
                     <?php endif; ?>
-                    <p><strong>Created:</strong> <?= htmlspecialchars($site['created_at'] ?? 'N/A') ?></p>
+                    <p><strong>Created:</strong> <?= htmlspecialchars($site->getCreatedAt() ?? 'N/A') ?></p>
                 </div>
             </div>
             
@@ -62,7 +62,7 @@ $currentPage = 'site_details';
                                 <tr>
                                     <td>
                                         <?php
-                                            $status = $result['status'] ?? 'unknown';
+                                            $status = $result->getStatus() ?? 'unknown';
                                             $badgeClass = 'warning'; // Default
                                             if ($status === 'up') {
                                                 $badgeClass = 'success';
@@ -74,10 +74,10 @@ $currentPage = 'site_details';
                                             <?= htmlspecialchars($status) ?>
                                         </span>
                                     </td>
-                                    <td><?= htmlspecialchars($result['response_time'] ?? 'N/A') ?>ms</td>
-                                    <td><?= htmlspecialchars($result['http_status_code'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($result['checked_at'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($result['message'] ?? '') ?></td>
+                                    <td><?= htmlspecialchars($result->getResponseTime() ?? 'N/A') ?>ms</td>
+                                    <td><?= htmlspecialchars($result->getStatusCode() ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($result->getCheckedAt() ?? 'N/A') ?></td>
+                                    <td><?= htmlspecialchars($result->getErrorMessage() ?? '') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

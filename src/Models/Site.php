@@ -36,17 +36,19 @@ class Site {
         $this->created_at = $data['created_at'] ?? null;
         $this->user = new User();
 
-        if(  ( isset($data['user_id']) && is_int($data['user_id']) ) ) {
+        if( isset($data['user_id']) ) {
+            if( !is_int($data['user_id']) ) {
+                throw new \InvalidArgumentException("User ID must be an integer.");
+            }
             $this->user_id = $data['user_id'];
             $this->user->setId($data['user_id']);
-        } else {
-            throw new \InvalidArgumentException("User ID must be an integer.");
         }
 
-        if( ( isset($data['username']) ) ) {
-            is_string($data['username'])
-                ? $this->user->setUsername($data['username'])
-                : throw new \InvalidArgumentException("Username must be a string.");
+        if( isset($data['username']) ) {
+            if( !is_string($data['username']) ) {
+                throw new \InvalidArgumentException("Username must be a string.");
+            }
+            $this->user->setUsername($data['username']);
         }
     }
 

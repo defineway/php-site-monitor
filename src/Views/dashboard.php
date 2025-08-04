@@ -76,9 +76,9 @@ $currentPage = 'dashboard';
                             <tbody>
                                 <?php foreach ($sites as $site): 
                                     $latest = $latestResults[$site->getId()] ?? null;
-                                    $statusClass = $latest ? 'status-' . $latest['status'] : 'text-muted';
+                                    $statusClass = $latest ? 'status-' . $latest->getStatus() : 'text-muted';
                                     $statusIcon = '';
-                                    switch ($latest['status'] ?? 'unknown') {
+                                    switch ($latest->getStatus() ?? 'unknown') {
                                         case 'up': $statusIcon = 'fas fa-check-circle text-success'; break;
                                         case 'down': $statusIcon = 'fas fa-times-circle text-danger'; break;
                                         case 'warning': $statusIcon = 'fas fa-exclamation-triangle text-warning'; break;
@@ -91,11 +91,11 @@ $currentPage = 'dashboard';
                                         <td>
                                             <span class="<?= $statusClass ?>">
                                                 <i class="<?= $statusIcon ?>"></i>
-                                                <?= $latest ? ucfirst($latest['status']) : 'Unknown' ?>
+                                                <?= $latest ? ucfirst($latest->getStatus()) : 'Unknown' ?>
                                             </span>
                                         </td>
-                                        <td><?= $latest ? $latest['response_time'] . 'ms' : 'N/A' ?></td>
-                                        <td><?= $latest ? date('M j, H:i', strtotime($latest['checked_at'])) : 'Never' ?></td>
+                                        <td><?= $latest ? $latest->getResponseTime() . 'ms' : 'N/A' ?></td>
+                                        <td><?= $latest ? date('M j, H:i', strtotime($latest->getCheckedAt())) : 'Never' ?></td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <a href="?action=site_details&id=<?= $site->getId() ?>" class="btn btn-sm btn-info">Details</a>

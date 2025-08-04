@@ -26,7 +26,7 @@ class UserService {
         return $this->db->lastInsertId();
     }
     
-    public function findByUsername(string $username): ?array {
+    public function findByUsername(string $username): ?User {
         $sql = "SELECT * FROM users WHERE username = :username AND is_active = 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['username' => $username]);

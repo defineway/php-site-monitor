@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\Site;
 use App\Models\MonitoringResult;
 use App\Services\SiteService;
+use App\Services\MonitoringResultService;
 use Exception;
 
 class SiteController extends BaseController {
@@ -74,15 +75,15 @@ class SiteController extends BaseController {
         
         $siteId = (int)($_GET['id'] ?? 0);
         $siteService = new SiteService();
-        $resultModel = new MonitoringResult();
+        $monitoringResultService = new MonitoringResultService();
 
         $site = $siteService->findById($siteId, $this->currentUser);
         if (!$site) {
             $this->redirectWithError('index.php', 'site_not_found');
         }
-        
-        $results = $resultModel->findBySiteId($siteId, 50); // Last 50 results
-        
+
+        $results = $monitoringResultService->findBySiteId($siteId, 50); // Last 50 results
+
         $this->render('site_details', [
             'site' => $site,
             'results' => $results
