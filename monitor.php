@@ -50,8 +50,8 @@ try {
         // Check if uptime monitoring is due
         if ($lastUptimeCheck) {
             $lastUptimeTime = new DateTime($lastUptimeCheck);
-            $minutesSinceLastUptime = $currentTime->getTimestamp() - $lastUptimeTime->getTimestamp();
-            $minutesSinceLastUptime = floor($minutesSinceLastUptime / 60); // Convert to minutes
+            $secondsSinceLastUptime = $currentTime->getTimestamp() - $lastUptimeTime->getTimestamp();
+            $minutesSinceLastUptime = floor($secondsSinceLastUptime / 60); // Convert to minutes
             
             if ($minutesSinceLastUptime >= $site->getCheckInterval()) {
                 $uptimeCheckDue = true;

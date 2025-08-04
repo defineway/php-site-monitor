@@ -163,25 +163,32 @@ $currentPage = 'site_details';
                                 <h6 class="text-muted mb-2"><i class="fas fa-certificate me-2"></i>Latest SSL Check</h6>
                                 <?php if ($latestSslResult->getSslExpiryDate()): ?>
                                     <?php
-                                        $expiryDate = new DateTime($latestSslResult->getSslExpiryDate());
-                                        $now = new DateTime();
-                                        $diff = $now->diff($expiryDate);
-                                        $daysLeft = $expiryDate < $now ? 0 : $diff->days;
+                                        try {
+                                            $expiryDate = new DateTime($latestSslResult->getSslExpiryDate());
+                                            $now = new DateTime();
+                                            $diff = $now->diff($expiryDate);
+                                            $daysLeft = $expiryDate < $now ? 0 : $diff->days;
+                                            $expiryDateFormatted = date('M d, Y', strtotime($latestSslResult->getSslExpiryDate()));
+                                        } catch (Exception $e) {
+                                            $expiryDate = null;
+                                            $daysLeft = 'N/A';
+                                            $expiryDateFormatted = 'Invalid date';
+                                        }
                                     ?>
                                     <div class="d-flex justify-content-between">
                                         <small class="text-muted">Expires:</small>
-                                        <strong><?= date('M d, Y', strtotime($latestSslResult->getSslExpiryDate())) ?></strong>
+                                        <strong><?= htmlspecialchars($expiryDateFormatted) ?></strong>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <small class="text-muted">Days Left:</small>
                                         <strong class="<?php
-                                            if ($daysLeft < 7) {
+                                            if (is_numeric($daysLeft) && $daysLeft < 7) {
                                                 echo 'text-danger';
-                                            } elseif ($daysLeft < 30) {
+                                            } elseif (is_numeric($daysLeft) && $daysLeft < 30) {
                                                 echo 'text-warning';
                                             }
                                         ?>">
-                                            <?= $daysLeft ?> days
+                                            <?= htmlspecialchars($daysLeft) ?><?= is_numeric($daysLeft) ? ' days' : '' ?>
                                         </strong>
                                     </div>
                                 <?php else: ?>
