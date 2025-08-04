@@ -17,7 +17,8 @@ This project is open source and available under the [MIT License](LICENSE) **wit
 
 Copyright © 2025 Sushovan Mukherjee, Defineway Technologies Private Limited
 
-All source code files include comprehensive license headers with author and company attribution.e-based access control (Admin/User roles)
+All source code files include comprehensive license headers with author and company attribution.
+- **🛡️ Role-based Access Control**: Admin/User roles
 - **👥 User Management**: Complete CRUD operations for user accounts with safety protections
 - **📊 Uptime Monitoring**: Check website availability and response times with intelligent interval management
 - **🔒 SSL Certificate Monitoring**: Monitor SSL certificate expiration dates with warnings and configurable intervals
