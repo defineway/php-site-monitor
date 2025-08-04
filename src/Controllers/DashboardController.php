@@ -2,7 +2,8 @@
 namespace App\Controllers;
 
 use App\Models\Site;
-use App\Models\MonitoringResult;
+use App\Services\SiteService;
+use App\Services\MonitoringResultService;
 use Exception;
 
 class DashboardController extends BaseController {
@@ -18,13 +19,13 @@ class DashboardController extends BaseController {
         $latestResults = [];
         
         try {
-            $siteModel = new Site();
-            $resultModel = new MonitoringResult();
-            
-            $sites = $siteModel->findAll($this->currentUser);
+            $siteService = new SiteService();
+            $resultService = new MonitoringResultService();
+
+            $sites = $siteService->findAll($this->currentUser);
             
             foreach ($sites as $site) {
-                $latestResults[$site['id']] = $resultModel->getLatestStatus($site['id']);
+                $latestResults[$site->getId()] = $resultService->getLatestStatus($site->getId());
             }
         } catch (Exception $e) {
             $error = "Database connection error. Please ensure the database is running and configured correctly.";

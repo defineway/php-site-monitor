@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Services\UserService;
 use Exception;
 
 class UserController extends BaseController {
@@ -11,9 +12,9 @@ class UserController extends BaseController {
      */
     public function profile(): void {
         $this->requireAuth();
-        
-        $userModel = new User();
-        $user = $userModel->findById($this->currentUser->getId());
+
+        $userService = new UserService();
+        $user = $userService->findById($this->currentUser->getId());
 
         $error = null;
         if (!$user || !is_object($user)) {
@@ -31,7 +32,7 @@ class UserController extends BaseController {
             
             if (!empty($updateData)) {
                 try {
-                    $userModel->update($this->currentUser->getId(), $updateData);
+                    $userService->update($this->currentUser->getId(), $updateData);
                     $this->redirectWithSuccess('index.php?action=profile', 'profile_updated');
                 } catch (Exception $e) {
                     $error = 'Failed to update profile: ' . $e->getMessage();
@@ -51,10 +52,13 @@ class UserController extends BaseController {
      */
     public function list(): void {
         $this->requireAdmin();
-        
-        $userModel = new User();
-        $users = $userModel->findAll();
-        
+
+        $userService = new UserService();
+        $users = $userService->findAll();
+        if (!$users) {
+            $users = [];
+        }
+
         $this->render('users', [
             'currentUser' => $this->currentUser,
             'users' => $users
@@ -74,8 +78,8 @@ class UserController extends BaseController {
             $formData = $_POST;
             
             try {
-                $userModel = new User();
-                $userModel->create([
+                $userService = new UserService();
+                $userService->create([
                     'username' => $_POST['username'],
                     'email' => $_POST['email'],
                     'password' => $_POST['password'],
@@ -102,9 +106,9 @@ class UserController extends BaseController {
         $this->requireAdmin();
         
         $userId = (int)($_GET['id'] ?? 0);
-        $userModel = new User();
-        $user = $userModel->findById($userId);
-        
+        $userService = new UserService();
+        $user = $userService->findById($userId);
+
         if (!$user) {
             $this->redirectWithError('index.php?action=users', 'user_not_found');
         }
@@ -131,7 +135,7 @@ class UserController extends BaseController {
             
             if (!empty($updateData)) {
                 try {
-                    $userModel->update($userId, $updateData);
+                    $userService->update($userId, $updateData);
                     $this->redirectWithSuccess('index.php?action=users', 'user_updated');
                 } catch (Exception $e) {
                     $error = 'Failed to update user: ' . $e->getMessage();
@@ -160,13 +164,13 @@ class UserController extends BaseController {
         }
         
         try {
-            $userModel = new User();
-            
+            $userService = new UserService();
+
             if ($hardDelete) {
-                $userModel->hardDelete($userId);
+                $userService->hardDelete($userId);
                 $this->redirectWithSuccess('index.php?action=users', 'user_permanently_deleted');
             } else {
-                $userModel->delete($userId);
+                $userService->delete($userId);
                 $this->redirectWithSuccess('index.php?action=users', 'user_deactivated');
             }
         } catch (Exception $e) {
@@ -187,8 +191,8 @@ class UserController extends BaseController {
         }
         
         try {
-            $userModel = new User();
-            $userModel->update($userId, ['status' => 'active']);
+            $userService = new UserService();
+            $userService->update($userId, ['status' => 'active']);
             $this->redirectWithSuccess('index.php?action=users', 'user_activated');
         } catch (Exception $e) {
             $this->redirectWithError('index.php?action=users', 'activation_failed');
@@ -208,8 +212,8 @@ class UserController extends BaseController {
         }
         
         try {
-            $userModel = new User();
-            $userModel->update($userId, ['status' => 'inactive']);
+            $userService = new UserService();
+            $userService->update($userId, ['status' => 'inactive']);
             $this->redirectWithSuccess('index.php?action=users', 'user_deactivated');
         } catch (Exception $e) {
             $this->redirectWithError('index.php?action=users', 'deactivation_failed');

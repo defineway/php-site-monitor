@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Models\Site;
 use App\Models\MonitoringResult;
+use App\Services\SiteService;
 use Exception;
 
 class SiteController extends BaseController {
@@ -20,8 +21,8 @@ class SiteController extends BaseController {
             $formData = $_POST;
             
             try {
-                $siteModel = new Site();
-                $siteModel->create($_POST, $this->currentUser->getId());
+                $siteService = new SiteService();
+                $siteService->create($_POST, $this->currentUser->getId());
                 $this->redirectWithSuccess('index.php', 'site_added');
             } catch (Exception $e) {
                 $error = 'Failed to add site: ' . $e->getMessage();
@@ -41,9 +42,9 @@ class SiteController extends BaseController {
         $this->requireAuth();
         
         $siteId = (int)($_GET['id'] ?? 0);
-        $siteModel = new Site();
-        $site = $siteModel->findById($siteId, $this->currentUser);
-        
+        $siteService = new SiteService();
+        $site = $siteService->findById($siteId, $this->currentUser);
+
         if (!$site) {
             $this->redirectWithError('index.php', 'site_not_found');
         }
@@ -52,7 +53,7 @@ class SiteController extends BaseController {
         
         if ($_POST) {
             try {
-                $siteModel->update($siteId, $_POST, $this->currentUser);
+                $siteService->update($siteId, $_POST, $this->currentUser);
                 $this->redirectWithSuccess('index.php', 'site_updated');
             } catch (Exception $e) {
                 $error = 'Failed to update site: ' . $e->getMessage();
@@ -72,10 +73,10 @@ class SiteController extends BaseController {
         $this->requireAuth();
         
         $siteId = (int)($_GET['id'] ?? 0);
-        $siteModel = new Site();
+        $siteService = new SiteService();
         $resultModel = new MonitoringResult();
-        
-        $site = $siteModel->findById($siteId, $this->currentUser);
+
+        $site = $siteService->findById($siteId, $this->currentUser);
         if (!$site) {
             $this->redirectWithError('index.php', 'site_not_found');
         }
@@ -97,8 +98,8 @@ class SiteController extends BaseController {
         $siteId = (int)($_GET['id'] ?? 0);
         
         try {
-            $siteModel = new Site();
-            $siteModel->delete($siteId, $this->currentUser);
+            $siteService = new SiteService();
+            $siteService->delete($siteId, $this->currentUser);
             $this->redirectWithSuccess('index.php', 'site_deleted');
         } catch (Exception $e) {
             $this->redirectWithError('index.php', 'delete_failed');
