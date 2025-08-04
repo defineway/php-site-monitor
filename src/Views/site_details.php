@@ -174,7 +174,13 @@ $currentPage = 'site_details';
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <small class="text-muted">Days Left:</small>
-                                        <strong class="<?= $daysLeft < 30 ? 'text-warning' : '' ?><?= $daysLeft < 7 ? 'text-danger' : '' ?>">
+                                        <strong class="<?php
+                                            if ($daysLeft < 7) {
+                                                echo 'text-danger';
+                                            } elseif ($daysLeft < 30) {
+                                                echo 'text-warning';
+                                            }
+                                        ?>">
                                             <?= $daysLeft ?> days
                                         </strong>
                                     </div>

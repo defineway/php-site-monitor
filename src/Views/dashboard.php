@@ -364,8 +364,7 @@ $currentPage = 'dashboard';
             }
         }
         
-        // Uncomment to enable auto-refresh
-        // setInterval(updateCountdown, 1000);
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
